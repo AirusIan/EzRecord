@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/welcome"
+        android:textSize = "45sp"
+        android:layout_width="394dp"
+        android:layout_height="738dp"
+        android:fontFamily="monospace"
+        android:padding="9dp"
+        android:text="100%"
+        android:gravity="center"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="5dp"
+        tools:text="Welcome" />
+
+    <Button
+        android:id="@+id/btn_start"
+        style="@style/DisabledToolbarButton"
+        android:layout_width="108dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="144dp"
+        android:enabled="false"
+        android:text="Start"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/welcome"
+        tools:ignore="MissingConstraints,UnknownId"
+        tools:layout_editor_absoluteY="303dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

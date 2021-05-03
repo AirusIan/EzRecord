@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="drawer_item_expandable_switch" type="id" />
+    <item name="btn_check" type="id" />
+    <item name="btn_delete" type="id" />
+    <item name="btn_mic" type="id" />
 </resources>
