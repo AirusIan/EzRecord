@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:divider="@drawable/ic_play"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_back_to_menu_in_play_sheet_music_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#00FFFFFF"
+                android:drawableLeft="@drawable/ic_rewind"
+                android:text="Menu" />
+
+            <ImageButton
+                android:id="@+id/btn_replay_in_play_sheet_music_bar"
+                style="@style/ToolbarButtonStyle"
+                android:background="@null"
+                android:contentDescription="@string/replay"
+                android:src="@drawable/ic_replay" />
+
+            <ImageButton
+                android:id="@+id/btn_play_in_play_sheet_music_bar"
+                style="@style/ToolbarButtonStyle"
+                android:contentDescription="@string/play"
+                android:src="@drawable/ic_play_circle_outline" />
+
+            <TextView
+                android:id="@+id/txt_speed_in_play_sheet_music_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/toolbar_height"
+                android:fontFamily="monospace"
+                android:padding="8dp"
+                android:text="100%"
+                tools:text="100%" />
+
+            <SeekBar
+                android:id="@+id/speed_bar_in_play_sheet_music_bar"
+                android:layout_width="200dp"
+                android:layout_height="@dimen/toolbar_height"
+                android:max="150"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:progress="100" />
+
+            <Button
+                android:id="@+id/btn_melody_in_play_sheet_music_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="主旋律" />
+
+            <Button
+                android:id="@+id/btn_accompainiment_in_play_sheet_music_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="伴奏" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                style="@style/ToolbarButtonStyle"
+                app:srcCompat="@drawable/ic_settings" />
+    </LinearLayout>
+
+</RelativeLayout>
