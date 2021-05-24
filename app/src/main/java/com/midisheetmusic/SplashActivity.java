@@ -39,7 +39,7 @@ public class SplashActivity extends AppCompatActivity {
             return;
         }
 
-        Intent intent = new Intent(this, ChooseSongActivity.class);
+        Intent intent = new Intent(this, WelcomeActivity.class);
         startActivity(intent);
         finish();
     }

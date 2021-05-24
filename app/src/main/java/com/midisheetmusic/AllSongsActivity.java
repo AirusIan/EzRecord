@@ -167,8 +167,8 @@ public class AllSongsActivity extends ListActivity implements TextWatcher {
     public void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.choose_song);
-        setTitle("MidiSheetMusic: Choose Song");
-        
+        setTitle("MidiSheetMusic: choose_song");
+
         /* If we're restarting from an orientation change,
          * load the saved song list.
          */
@@ -268,8 +268,8 @@ public class AllSongsActivity extends ListActivity implements TextWatcher {
         }
     }
 
-    
-    /** Look for midi files (with mime-type audio/midi) in the 
+
+    /** Look for midi files (with mime-type audio/midi) in the
      * internal/external storage. Add them to the songlist.
      */
     private void loadMidiFilesFromProvider(Uri content_uri) {
@@ -288,7 +288,7 @@ public class AllSongsActivity extends ListActivity implements TextWatcher {
             cursor.close();
             return;
         }
-        
+
         do {
             int idColumn = cursor.getColumnIndex(MediaStore.Audio.Media._ID);
             int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
