@@ -29,12 +29,22 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.welcome);
 
         Button btn_to_choose_song = (Button) findViewById(R.id.btn_start);
+        Button btn_to_record = (Button) findViewById(R.id.btn_record);
 
         btn_to_choose_song.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(WelcomeActivity.this, ChooseSongActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btn_to_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(WelcomeActivity.this, RecordActivity.class);
                 startActivity(intent);
             }
         });
