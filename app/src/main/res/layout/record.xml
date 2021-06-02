@@ -37,11 +37,12 @@
         style="@style/ToolbarButtonStyle"
         android:layout_width="113dp"
         android:layout_height="72dp"
-        android:layout_marginBottom="196dp"
         android:src="@drawable/ic_mic"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="297dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
     <!--</merge>-->
