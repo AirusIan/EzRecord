@@ -42,6 +42,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondarySwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.util.DrawerItemViewHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -187,7 +188,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
                 })
                 .withSubItems(showMeasures, loopStart, loopEnd);
 
-        // Drawer
+        // Drawer 點選後拉出來的畫面
         drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withInnerShadow(true)
@@ -209,10 +210,10 @@ public class SheetMusicActivity extends MidiHandlingActivity {
 
         player = new MidiPlayer(this);
         player.setDrawer(drawer);
-        layout.addView(player);
+        layout.addView(player);//最上面功能的Bar
 
         piano = new Piano(this);
-        layout.addView(piano);
+        layout.addView(piano);//把鋼琴加入畫面
         player.SetPiano(piano);
         layout.requestLayout();
 
@@ -231,7 +232,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
         sheet = new SheetMusic(this);
         sheet.init(midifile, options);
         sheet.setPlayer(player);
-        layout.addView(sheet);
+        layout.addView(sheet);//將樂譜加入畫面
         piano.SetMidiFile(midifile, options, player);
         piano.SetShadeColors(options.shade1Color, options.shade2Color);
 
@@ -269,6 +270,11 @@ public class SheetMusicActivity extends MidiHandlingActivity {
             case R.id.save_images:
                 showSaveImagesDialog();
                 drawer.closeDrawer();
+                break;
+            case R.id.song_tips:
+                break;
+            case R.id.song_record:
+                record();
                 break;
             case ID_LOOP_START:
                 // Note that we display the measure numbers starting at 1,
@@ -321,6 +327,13 @@ public class SheetMusicActivity extends MidiHandlingActivity {
      *  When the SettingsActivity has finished, the onActivityResult()
      *  method will be called.
      */
+//這裡為新增功能，前往record頁面
+    private void record() {
+        Intent intent = new Intent();
+        intent.setClass(this, RecordActivity.class);
+        startActivity(intent);
+    }
+
     private void changeSettings() {
         MidiOptions defaultOptions = new MidiOptions(midifile);
         Intent intent = new Intent(this, SettingsActivity.class);
