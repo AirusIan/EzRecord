@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
 import java.io.IOException;
 
 public class RecordActivity extends AppCompatActivity {
@@ -35,6 +36,11 @@ public class RecordActivity extends AppCompatActivity {
 
     private static String fileName = null;
     ImageButton btn_record = null;
+
+    long startRecorderTime = 0;
+    long stopRecorderTime = 0;
+
+    boolean record_on = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,45 +110,90 @@ public class RecordActivity extends AppCompatActivity {
         btn_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recorder = new MediaRecorder();
-                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                recorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-                recorder.setOutputFile(fileName);
-                try {
-                    recorder.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                recorder.start();
-                Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
+                if(!record_on)
+                    doStart();
+                else
+                    doStop();
             }
         });
 
     }
 
-    public void start(View view){
+
+    /**
+     * 啟動錄音
+     *
+     * @return
+     */
+    private boolean doStart() {
+
         try {
+            //建立MediaRecorder
+            recorder = new MediaRecorder();
+            //建立錄音檔案
+            File mRecorderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + "/recorderdemo/" + System.currentTimeMillis() + ".m4a");
+            if (!mRecorderFile.getParentFile().exists()) mRecorderFile.getParentFile().mkdirs();
+            mRecorderFile.createNewFile();
+
+
+            //配置MediaRecorder
+
+            //從麥克風採集
+            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+
+            //儲存檔案為MP4格式
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+
+            //所有android系統都支援的適中取樣的頻率
+            recorder.setAudioSamplingRate(44100);
+
+            //通用的AAC編碼格式
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+
+            //設定音質頻率
+            recorder.setAudioEncodingBitRate(96000);
+
+            //設定檔案錄音的位置
+            recorder.setOutputFile(mRecorderFile.getAbsolutePath());
+
+
+            //開始錄音
             recorder.prepare();
             recorder.start();
-        } catch (IllegalStateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        btn_record.setEnabled(false);
-//        btn_stop.setEnabled(true);
+            startRecorderTime = System.currentTimeMillis();
 
+        } catch (Exception e) {
+            Toast.makeText(RecordActivity.this, "錄音失敗，請重試", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        //記錄開始錄音時間，用於統計時長，小於3秒中，錄音不傳送
+
+        record_on = true;
+
+        return true;
     }
 
-//    public void stop(View view){
-//        recorder.stop();
-//        recorder.release();
-//        recorder  = null;
-//        btn_stop.setEnabled(false);
-//        Toast.makeText(getApplicationContext(), "Audio recorded successfully",
-//                Toast.LENGTH_LONG).show();
-//    }
+    /**
+     * 關閉錄音
+     *
+     * @return
+     */
+    private boolean doStop() {
+        try {
+            recorder.stop();
+            stopRecorderTime = System.currentTimeMillis();
+            final int second = (int) (stopRecorderTime - startRecorderTime) / 1000;
+            //按住時間小於3秒鐘，算作錄取失敗，不進行傳送
+            if (second < 3) return false;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        record_on = false;
+
+        return true;
+    }
+
 }
