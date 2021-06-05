@@ -1,10 +1,15 @@
 package com.midisheetmusic;
 
 import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +19,11 @@ import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +57,9 @@ public class RecordActivity extends AppCompatActivity {
         setTitle("MidiSheetMusic: Record");
         // Load the list of songs
         setContentView(R.layout.record);
+
+        //檢查權限
+        checkPermission();
 
         ImageButton btn_mic = (ImageButton) findViewById(R.id.btn_mic);
         chronometer_timer = (Chronometer) findViewById(R.id.timer);
@@ -104,8 +116,6 @@ public class RecordActivity extends AppCompatActivity {
 
         btn_record = (ImageButton) findViewById(R.id.btn_mic);
 
-        fileName = Environment.getExternalStorageDirectory().
-                getAbsolutePath() + "/myrecording.3gp";
 
         btn_record.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +142,7 @@ public class RecordActivity extends AppCompatActivity {
             recorder = new MediaRecorder();
             //建立錄音檔案
             File mRecorderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + "/recorderdemo/" + System.currentTimeMillis() + ".m4a");
+                    + "/recorderdemo/" + System.currentTimeMillis() + ".mp3");
             if (!mRecorderFile.getParentFile().exists()) mRecorderFile.getParentFile().mkdirs();
             mRecorderFile.createNewFile();
 
@@ -165,11 +175,13 @@ public class RecordActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Toast.makeText(RecordActivity.this, "錄音失敗，請重試", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
             return false;
         }
         //記錄開始錄音時間，用於統計時長，小於3秒中，錄音不傳送
 
         record_on = true;
+        Toast.makeText(RecordActivity.this, "錄音開始，請開始唱歌", Toast.LENGTH_SHORT).show();
 
         return true;
     }
@@ -192,8 +204,50 @@ public class RecordActivity extends AppCompatActivity {
         }
 
         record_on = false;
+        Toast.makeText(RecordActivity.this, "錄音結束，轉檔開始", Toast.LENGTH_SHORT).show();
 
         return true;
+    }
+
+    /**
+     * 权限申请
+     */
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String[] permissions = new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, permissions, 200);
+                    return;
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
+            grantResults) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && requestCode == 200) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivityForResult(intent, 200);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 200) {
+            checkPermission();
+        }
     }
 
 }
