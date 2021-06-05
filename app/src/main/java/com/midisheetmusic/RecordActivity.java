@@ -1,18 +1,22 @@
 package com.midisheetmusic;
 
-import android.content.Intent;
+import android.Manifest;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.io.IOException;
 
 public class RecordActivity extends AppCompatActivity {
 
@@ -25,6 +29,12 @@ public class RecordActivity extends AppCompatActivity {
     boolean status = false;//錄音狀態:false為關閉 true為開啟
 //    TextView record_timer;
     Chronometer chronometer_timer;
+
+
+    MediaRecorder recorder = null;
+
+    private static String fileName = null;
+    ImageButton btn_record = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,5 +95,54 @@ public class RecordActivity extends AppCompatActivity {
             }
         });
   */
+
+        btn_record = (ImageButton) findViewById(R.id.btn_mic);
+
+        fileName = Environment.getExternalStorageDirectory().
+                getAbsolutePath() + "/myrecording.3gp";
+
+        btn_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recorder = new MediaRecorder();
+                recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                recorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+                recorder.setOutputFile(fileName);
+                try {
+                    recorder.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                recorder.start();
+                Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
+
+    public void start(View view){
+        try {
+            recorder.prepare();
+            recorder.start();
+        } catch (IllegalStateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        btn_record.setEnabled(false);
+//        btn_stop.setEnabled(true);
+
+    }
+
+//    public void stop(View view){
+//        recorder.stop();
+//        recorder.release();
+//        recorder  = null;
+//        btn_stop.setEnabled(false);
+//        Toast.makeText(getApplicationContext(), "Audio recorded successfully",
+//                Toast.LENGTH_LONG).show();
+//    }
 }
