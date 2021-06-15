@@ -28,12 +28,23 @@ public class WelcomeActivity extends AppCompatActivity {
         // Load the list of songs
         setContentView(R.layout.welcome);
 
-        Button btn_to_choose_song = (Button) findViewById(R.id.btn_start);
+        ImageButton btn_to_choose_song = (ImageButton) findViewById(R.id.btn_folder);
+        Button btn_to_new_song = (Button) findViewById(R.id.btn_start);
 
         btn_to_choose_song.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
+                intent.setClass(WelcomeActivity.this, ChooseSongActivity.class);
+                startActivity(intent);
+            }
+        });
+        btn_to_new_song.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+//                Intent intent = new Intent(Intent.ACTION_VIEW, file.getUri(), this, SheetMusicActivity.class);
+//                如何建立空白檔案?
                 intent.setClass(WelcomeActivity.this, ChooseSongActivity.class);
                 startActivity(intent);
             }

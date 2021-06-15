@@ -272,6 +272,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
                 drawer.closeDrawer();
                 break;
             case R.id.song_tips:
+                tips();
                 break;
             case R.id.song_record:
                 record();
@@ -321,12 +322,18 @@ public class SheetMusicActivity extends MidiHandlingActivity {
     }
 
 
+
     /** To change the sheet music options, start the SettingsActivity.
      *  Pass the current MidiOptions as a parameter to the Intent.
      *  Also pass the 'default' MidiOptions as a parameter to the Intent.
      *  When the SettingsActivity has finished, the onActivityResult()
      *  method will be called.
      */
+    private void tips() {
+        Intent intent = new Intent();
+        intent.setClass(this, TipsActivity.class);
+        startActivity(intent);
+    }
 //這裡為新增功能，前往record頁面
     private void record() {
         Intent intent = new Intent();
