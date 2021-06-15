@@ -49,7 +49,6 @@ public class RecordActivity extends AppCompatActivity {
     long startRecorderTime = 0;
     long stopRecorderTime = 0;
 
-    boolean record_on = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,21 +60,21 @@ public class RecordActivity extends AppCompatActivity {
         //檢查權限
         checkPermission();
 
-        ImageButton btn_mic = (ImageButton) findViewById(R.id.btn_mic);
+        btn_record = (ImageButton) findViewById(R.id.btn_mic);
         chronometer_timer = (Chronometer) findViewById(R.id.timer);
 //        record_timer = (TextView) findViewById(R.id.record_timer);
 
-        btn_mic.setOnClickListener((press)->{
-            if (status == false){
-                chronometer_timer.setBase(SystemClock.elapsedRealtime());
-                chronometer_timer.start();
-                status = true;
-            }else{
-                chronometer_timer.stop();
-                status = false;
-            }
-
-        });
+//        btn_record.setOnClickListener((press)->{
+//            if (status == false){
+//                chronometer_timer.setBase(SystemClock.elapsedRealtime());
+//                chronometer_timer.start();
+//                status = true;
+//            }else{
+//                chronometer_timer.stop();
+//                status = false;
+//            }
+//
+//        });
         //舊寫法
         /*
         btn_mic.setOnClickListener((start)->{
@@ -114,16 +113,20 @@ public class RecordActivity extends AppCompatActivity {
         });
   */
 
-        btn_record = (ImageButton) findViewById(R.id.btn_mic);
-
 
         btn_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!record_on)
+
+                if(!status) {
                     doStart();
-                else
+                    chronometer_timer.setBase(SystemClock.elapsedRealtime());
+                    chronometer_timer.start();
+                }
+                else {
                     doStop();
+                    chronometer_timer.stop();
+                }
             }
         });
 
@@ -180,7 +183,7 @@ public class RecordActivity extends AppCompatActivity {
         }
         //記錄開始錄音時間，用於統計時長，小於3秒中，錄音不傳送
 
-        record_on = true;
+        status = true;
         Toast.makeText(RecordActivity.this, "錄音開始，請開始唱歌", Toast.LENGTH_SHORT).show();
 
         return true;
@@ -203,7 +206,7 @@ public class RecordActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        record_on = false;
+        status = false;
         Toast.makeText(RecordActivity.this, "錄音結束，轉檔開始", Toast.LENGTH_SHORT).show();
 
         return true;
