@@ -63,57 +63,6 @@ public class RecordActivity extends AppCompatActivity {
 
         btn_record = (ImageButton) findViewById(R.id.btn_mic);
         chronometer_timer = (Chronometer) findViewById(R.id.timer);
-//        record_timer = (TextView) findViewById(R.id.record_timer);
-
-//        btn_record.setOnClickListener((press)->{
-//            if (status == false){
-//                chronometer_timer.setBase(SystemClock.elapsedRealtime());
-//                chronometer_timer.start();
-//                status = true;
-//            }else{
-//                chronometer_timer.stop();
-//                status = false;
-//            }
-//
-//        });
-        //舊寫法
-        /*
-        btn_mic.setOnClickListener((start)->{
-            if (status == false) {
-                timer = new Timer(); //時間函式初始化
-                task = new TimerTask(){
-                    public void run(){
-                        runOnUiThread(new Runnable(){
-                            @Override
-                            public void run(){
-                                if(second < 60) {
-                                    second++; //增加秒數
-                                    record_timer.setText(minute+":"+second);
-                                }else{
-                                    minute++;
-                                    second = 0;
-                                }
-                            }
-
-                        });
-                    }
-                };
-                timer.schedule(task, 1000, 1000);
-                status = true;
-            }
-            else{
-                timer.cancel();
-                timer = null;
-                task.cancel();
-                task = null;
-                status = false;
-                second = 0;
-                minute = 0;
-                record_timer.setText(minute+":"+second);
-            }
-        });
-  */
-
 
         btn_record.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,39 +91,6 @@ public class RecordActivity extends AppCompatActivity {
     private boolean doStart() {
 
         try {
-            //建立MediaRecorder
-//            recorder = new MediaRecorder();
-//            //建立錄音檔案
-//            File mRecorderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-//                   + "/recorderdemo/" + System.currentTimeMillis() + ".mp3");
-//            if (!mRecorderFile.getParentFile().exists()) mRecorderFile.getParentFile().mkdirs();
-//            mRecorderFile.createNewFile();
-//
-//
-//            //配置MediaRecorder
-//
-//            //從麥克風採集
-//            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-//
-//            //儲存檔案為MP4格式
-//            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-//
-//            //所有android系統都支援的適中取樣的頻率
-//            recorder.setAudioSamplingRate(44100);
-//
-//            //通用的AAC編碼格式
-//            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-//
-//            //設定音質頻率
-//            recorder.setAudioEncodingBitRate(96000);
-//
-//            //設定檔案錄音的位置
-//            recorder.setOutputFile(mRecorderFile.getAbsolutePath());
-//
-//
-//            //開始錄音
-//            recorder.prepare();
-//            recorder.start();
             startRecorderTime = System.currentTimeMillis();
             mAudioRecordFunc.startRecordAndFile();
 
@@ -198,7 +114,6 @@ public class RecordActivity extends AppCompatActivity {
      */
     private boolean doStop() {
         try {
-//            recorder.stop();
             mAudioRecordFunc.stopRecordAndFile();
             stopRecorderTime = System.currentTimeMillis();
             final int second = (int) (stopRecorderTime - startRecorderTime) / 1000;
