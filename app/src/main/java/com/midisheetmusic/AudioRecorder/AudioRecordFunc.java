@@ -125,6 +125,7 @@ public class AudioRecordFunc {
             if (file.exists()) {
                 file.delete();
             }
+            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
             fos = new FileOutputStream(file); // 建立一个可存取字节的文件
         } catch (Exception e) {
             e.printStackTrace();
@@ -158,6 +159,9 @@ public class AudioRecordFunc {
         long byteRate = 16 * AudioFileFunc.AUDIO_SAMPLE_RATE * channels / 8 ;
         byte [] data = new byte [bufferSizeInBytes];
         try {
+            File outfile = new File(outFilename);
+            if(!outfile.getParentFile().exists()) outfile.getParentFile().mkdirs();
+
             in = new FileInputStream(inFilename);
             out = new FileOutputStream(outFilename);
             totalAudioLen = in.getChannel().size();
