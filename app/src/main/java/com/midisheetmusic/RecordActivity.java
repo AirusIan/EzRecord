@@ -24,10 +24,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import java.io.File;
 import java.io.IOException;
-
+import com.midisheetmusic.AudioRecorder.AudioRecordFunc;
 public class RecordActivity extends AppCompatActivity {
 
     /*
@@ -43,12 +44,12 @@ public class RecordActivity extends AppCompatActivity {
 
     MediaRecorder recorder = null;
 
-    private static String fileName = null;
+    private String fileName = null;
     ImageButton btn_record = null;
 
     long startRecorderTime = 0;
     long stopRecorderTime = 0;
-
+    AudioRecordFunc mAudioRecordFunc = new AudioRecordFunc();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,39 +143,40 @@ public class RecordActivity extends AppCompatActivity {
 
         try {
             //建立MediaRecorder
-            recorder = new MediaRecorder();
-            //建立錄音檔案
-            File mRecorderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + "/recorderdemo/" + System.currentTimeMillis() + ".mp3");
-            if (!mRecorderFile.getParentFile().exists()) mRecorderFile.getParentFile().mkdirs();
-            mRecorderFile.createNewFile();
-
-
-            //配置MediaRecorder
-
-            //從麥克風採集
-            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-
-            //儲存檔案為MP4格式
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-
-            //所有android系統都支援的適中取樣的頻率
-            recorder.setAudioSamplingRate(44100);
-
-            //通用的AAC編碼格式
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
-            //設定音質頻率
-            recorder.setAudioEncodingBitRate(96000);
-
-            //設定檔案錄音的位置
-            recorder.setOutputFile(mRecorderFile.getAbsolutePath());
-
-
-            //開始錄音
-            recorder.prepare();
-            recorder.start();
+//            recorder = new MediaRecorder();
+//            //建立錄音檔案
+//            File mRecorderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+//                   + "/recorderdemo/" + System.currentTimeMillis() + ".mp3");
+//            if (!mRecorderFile.getParentFile().exists()) mRecorderFile.getParentFile().mkdirs();
+//            mRecorderFile.createNewFile();
+//
+//
+//            //配置MediaRecorder
+//
+//            //從麥克風採集
+//            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//
+//            //儲存檔案為MP4格式
+//            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//
+//            //所有android系統都支援的適中取樣的頻率
+//            recorder.setAudioSamplingRate(44100);
+//
+//            //通用的AAC編碼格式
+//            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+//
+//            //設定音質頻率
+//            recorder.setAudioEncodingBitRate(96000);
+//
+//            //設定檔案錄音的位置
+//            recorder.setOutputFile(mRecorderFile.getAbsolutePath());
+//
+//
+//            //開始錄音
+//            recorder.prepare();
+//            recorder.start();
             startRecorderTime = System.currentTimeMillis();
+            mAudioRecordFunc.startRecordAndFile();
 
         } catch (Exception e) {
             Toast.makeText(RecordActivity.this, "錄音失敗，請重試", Toast.LENGTH_SHORT).show();
@@ -196,7 +198,8 @@ public class RecordActivity extends AppCompatActivity {
      */
     private boolean doStop() {
         try {
-            recorder.stop();
+//            recorder.stop();
+            mAudioRecordFunc.stopRecordAndFile();
             stopRecorderTime = System.currentTimeMillis();
             final int second = (int) (stopRecorderTime - startRecorderTime) / 1000;
             //按住時間小於3秒鐘，算作錄取失敗，不進行傳送
@@ -252,5 +255,6 @@ public class RecordActivity extends AppCompatActivity {
             checkPermission();
         }
     }
+
 
 }
