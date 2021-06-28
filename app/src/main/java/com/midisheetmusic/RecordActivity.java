@@ -114,11 +114,15 @@ public class RecordActivity extends AppCompatActivity {
      */
     private boolean doStop() {
         try {
+            final int second = (int) (stopRecorderTime - startRecorderTime) / 1000;
+//            //按住時間小於3秒鐘，算作錄取失敗，不進行傳送
+//            if (second < 3) {
+//                Toast.makeText(RecordActivity.this, "錄音失敗(未超過3秒)，請重試", Toast.LENGTH_SHORT).show();
+//                status = false;
+//                return true;
+//            }
             mAudioRecordFunc.stopRecordAndFile();
             stopRecorderTime = System.currentTimeMillis();
-            final int second = (int) (stopRecorderTime - startRecorderTime) / 1000;
-            //按住時間小於3秒鐘，算作錄取失敗，不進行傳送
-            if (second < 3) return false;
 
         } catch (Exception e) {
             e.printStackTrace();
