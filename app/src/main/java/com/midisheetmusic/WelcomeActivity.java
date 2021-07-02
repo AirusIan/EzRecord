@@ -14,6 +14,7 @@ package com.midisheetmusic;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.*;
@@ -57,7 +58,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         public void run() {
                             gotoNew();
                         }
-                    }, 3000);
+                    }, 2000);
                 }
             });
         }catch (Exception e){
@@ -105,14 +106,15 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(animator.isRunning()){
-            animator.cancel();
-        }
+//        if(animator.isRunning()){
+//            animator.cancel();
+//        }
         clayout.getBackground().setAlpha(0);
         btn_record.regainBackground();
 
     }
 
+    @SuppressLint("ResourceAsColor")
     private void changeLayoutBackground(){
         clayout.setBackgroundColor(R.color.md_pink_200);
     }

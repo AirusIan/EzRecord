@@ -271,7 +271,8 @@ public class SheetMusicActivity extends MidiHandlingActivity {
                 showSaveImagesDialog();
                 drawer.closeDrawer();
                 break;
-            case R.id.song_tips:
+            case R.id.song_editor:
+                editor();
                 break;
             case R.id.song_record:
                 record();
@@ -333,7 +334,18 @@ public class SheetMusicActivity extends MidiHandlingActivity {
         intent.setClass(this, RecordActivity.class);
         startActivity(intent);
     }
-
+//新增功能，前往tips頁面
+    private void tips() {
+    Intent intent = new Intent();
+    intent.setClass(this, TipsActivity.class);
+    startActivity(intent);
+}
+//新增功能，前往editor頁面
+    private void editor() {
+        Intent intent = new Intent();
+        intent.setClass(this, EditorActivity.class);
+        startActivity(intent);
+    }
     private void changeSettings() {
         MidiOptions defaultOptions = new MidiOptions(midifile);
         Intent intent = new Intent(this, SettingsActivity.class);

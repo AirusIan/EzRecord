@@ -26,6 +26,10 @@
         <activity android:name=".FileBrowserActivity" />
         <activity android:name=".AllSongsActivity" />
         <activity android:name=".RecentSongsActivity" />
+        <activity android:name=".TipsActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".EditorActivity"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".RecordActivity"
             android:screenOrientation="landscape" />

@@ -7,8 +7,8 @@
         android:id="@+id/save_images"
         android:title="@string/save_images_str" />
     <item
-        android:id="@+id/song_tips"
-        android:title="Tips"/>
+        android:id="@+id/song_editor"
+        android:title="Editor"/>
     <item
         android:id="@+id/song_record"
         android:title="Record"/>
