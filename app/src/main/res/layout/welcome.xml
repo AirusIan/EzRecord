@@ -1,43 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/welcome_back_ground">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/welcome_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_pink_300">
 
     <TextView
         android:id="@+id/welcome"
-        android:layout_width="262dp"
-        android:layout_height="133dp"
+        android:layout_width="321dp"
+        android:layout_height="141dp"
+        android:backgroundTint="#00FFFFFF"
         android:fontFamily="monospace"
         android:gravity="center"
         android:padding="9dp"
         android:text="Welcome"
-        android:textSize="45sp"
+        android:textColor="#161919"
+        android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.52"
+        app:layout_constraintVertical_bias="0.185"
         tools:ignore="MissingConstraints"
         tools:text="Welcome" />
 
-    <Button
+    <com.midisheetmusic.NbButton
+        android:id="@+id/welcome_record_btn"
+        android:layout_width="267dp"
+        android:layout_height="94dp"
+        android:layout_marginStart="195dp"
+        android:layout_marginTop="281dp"
+        android:layout_marginEnd="182dp"
+        android:layout_marginBottom="291dp"
+        android:text="Record Now"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.527"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcome"
+        app:layout_constraintVertical_bias="0.469" />
+
+    <ImageButton
         android:id="@+id/btn_start"
-        android:layout_width="108dp"
-        android:layout_height="49dp"
-        android:enabled="true"
-        android:text="Start"
-        android:textColor="@color/md_white_1000"
-        android:textSize="20sp"
+        android:layout_width="95dp"
+        android:layout_height="87dp"
+        android:layout_marginStart="609dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="35dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.942"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.384"
-        tools:ignore="MissingConstraints,UnknownId" />
+        app:layout_constraintVertical_bias="0.961"
+        app:srcCompat="@drawable/directoryicon" />
 
     <ImageButton
         android:id="@+id/btn_folder"
@@ -51,3 +78,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
