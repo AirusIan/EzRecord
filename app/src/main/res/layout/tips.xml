@@ -94,7 +94,7 @@
                 android:layout_weight="1"
 
                 android:backgroundTint="#EB09008A"
-                android:text="憂鬱"
+                android:text="哀愁"
                 android:textSize="24sp" />
         </LinearLayout>
 
