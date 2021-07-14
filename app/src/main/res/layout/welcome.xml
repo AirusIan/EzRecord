@@ -11,7 +11,7 @@
     android:id="@+id/welcome_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_pink_300">
+    android:background="#03A9F4">
 
     <TextView
         android:id="@+id/welcome"
