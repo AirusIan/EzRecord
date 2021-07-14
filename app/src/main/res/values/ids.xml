@@ -5,4 +5,5 @@
     <item name="btn_delete" type="id" />
     <item name="btn_mic" type="id" />
     <item name="timer" type="id" />
+    <item name="layout_of_edit_sheet" type="id" />
 </resources>
