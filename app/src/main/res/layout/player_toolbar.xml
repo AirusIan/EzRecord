@@ -10,7 +10,7 @@
     android:layout_height="@dimen/toolbar_height"
     android:layout_marginStart="8dp"
     android:layout_marginTop="4dp"
-    android:layout_marginEnd="8dp"
+    android:layout_marginEnd="0dp"
     android:background="@color/secondary_text"
     android:orientation="horizontal">
 
@@ -75,8 +75,7 @@
         android:textColor="@color/accent"
         android:enabled="false"
         android:layout_width="80dp"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
 
     <View
         android:layout_width="0dp"

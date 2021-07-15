@@ -116,7 +116,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @SuppressLint("ResourceAsColor")
     private void changeLayoutBackground(){
-        clayout.setBackgroundColor(R.color.md_pink_200);
+        clayout.setBackgroundColor(R.color.md_blue_400);
     }
 
     private void recoverLayoutBackground(){
