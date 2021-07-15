@@ -39,6 +39,9 @@
         <activity
             android:name=".TipsSongActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".TipsSheetActivity"
+            android:screenOrientation="landscape"/>
         <!-- 到這裡 -->
 
         <activity
