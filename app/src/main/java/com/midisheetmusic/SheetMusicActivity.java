@@ -75,7 +75,8 @@ public class SheetMusicActivity extends MidiHandlingActivity {
     private MidiOptions options; /* The options for sheet music and sound */
     private long midiCRC;        /* CRC of the midi bytes */
     private Drawer drawer;
-
+    private Uri uri;
+    private String title;
      /** Create this SheetMusicActivity.
       * The Intent should have two parameters:
       * - data: The uri of the midi file to open.
@@ -97,12 +98,12 @@ public class SheetMusicActivity extends MidiHandlingActivity {
         TimeSigSymbol.LoadImages(this);
 
         // Parse the MidiFile from the raw bytes
-        Uri uri = this.getIntent().getData();
+        uri = this.getIntent().getData();
         if (uri == null) {
             this.finish();
             return;
         }
-        String title = this.getIntent().getStringExtra(MidiTitleID);
+        title = this.getIntent().getStringExtra(MidiTitleID);
         if (title == null) {
             title = uri.getLastPathSegment();
         }
@@ -117,7 +118,6 @@ public class SheetMusicActivity extends MidiHandlingActivity {
             this.finish();
             return;
         }
-
         // Initialize the settings (MidiOptions).
         // If previous settings have been saved, use those
         options = new MidiOptions(midifile);
@@ -139,7 +139,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
     }
 
     /* Create the MidiPlayer and Piano views */
-    void createViews() {
+   public void createViews() {
         layout = findViewById(R.id.sheet_content);
 
         SwitchDrawerItem scrollVertically = new SwitchDrawerItem()
@@ -342,7 +342,8 @@ public class SheetMusicActivity extends MidiHandlingActivity {
 }
 //新增功能，前往editor頁面
     private void editor() {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri, this, EditorActivity.class);
+        intent.putExtra(EditorActivity.MidiTitleID, title);
         intent.setClass(this, EditorActivity.class);
         startActivity(intent);
     }

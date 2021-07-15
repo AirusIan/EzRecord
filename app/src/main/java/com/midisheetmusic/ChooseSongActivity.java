@@ -79,6 +79,8 @@ public class ChooseSongActivity extends TabActivity {
         updateRecentFile(file);
         Intent intent = new Intent(Intent.ACTION_VIEW, file.getUri(), this, SheetMusicActivity.class);
         intent.putExtra(SheetMusicActivity.MidiTitleID, file.toString());
+
+
         startActivity(intent);
     }
 
