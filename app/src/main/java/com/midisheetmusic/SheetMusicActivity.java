@@ -334,12 +334,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
         intent.setClass(this, RecordActivity.class);
         startActivity(intent);
     }
-//新增功能，前往tips頁面
-    private void tips() {
-    Intent intent = new Intent();
-    intent.setClass(this, TipsActivity.class);
-    startActivity(intent);
-}
+
 //新增功能，前往editor頁面
     private void editor() {
         Intent intent = new Intent(Intent.ACTION_VIEW, uri, this, EditorActivity.class);
