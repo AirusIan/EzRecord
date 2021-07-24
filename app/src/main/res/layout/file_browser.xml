@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="#000000"
+    android:background="@color/material_drawer_primary"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <TextView
         android:id="@+id/directory"
         android:textColor="#f0f0f0"
-        android:background="#000000"
+        android:background="@color/material_drawer_primary"
         tools:text="Current directory"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:layout_marginTop="10dip"
         android:layout_marginRight="10dip"
         android:layout_marginBottom="10dip"
-        android:background="#000000"
+        android:background="@color/material_drawer_primary"
         android:clickable="true"
         android:focusable="true"
         android:onClick="onHomeClick"
@@ -36,7 +36,7 @@
 
     <ListView
         android:id="@android:id/list"
-        android:background="#000000"
+        android:background="@color/icons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
