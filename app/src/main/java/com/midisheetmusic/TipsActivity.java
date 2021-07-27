@@ -17,7 +17,7 @@ public class TipsActivity extends AppCompatActivity {
     private Button btn_relaxing;
     private Button btn_solemn;
     private Button btn_romantic;
-    public static String status;
+    public String status;
 
     @Override
     public void onCreate(Bundle state) {
@@ -80,6 +80,7 @@ public class TipsActivity extends AppCompatActivity {
     public void loadSongs(){
         Intent intent = new Intent();
         intent.setClass(this, TipsSongActivity.class);
+        intent.putExtra("status",status);
         startActivity(intent);
     }
 }

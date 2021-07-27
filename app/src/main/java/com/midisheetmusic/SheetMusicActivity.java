@@ -22,6 +22,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,6 +86,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
+        TipsSheetActivity.sheet_type = TipsSheetActivity.Sheet_type.Normal;
 
         // Hide the navigation bar before the views are laid out
         hideSystemUI();
@@ -99,6 +101,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
 
         // Parse the MidiFile from the raw bytes
         uri = this.getIntent().getData();
+        Log.d("URI_Name",uri.toString());
         if (uri == null) {
             this.finish();
             return;

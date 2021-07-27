@@ -21,6 +21,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -182,63 +183,79 @@ public class MidiPlayer extends LinearLayout {
 
     /** Create the rewind, play, stop, and fast forward buttons */
     void init() {
-        inflate(activity, R.layout.player_toolbar, this);
+        switch(TipsSheetActivity.sheet_type){
+            case Normal:
+                inflate(activity, R.layout.player_toolbar, this);
 
-        ImageButton backButton = findViewById(R.id.btn_back);
-        ImageButton rewindButton = findViewById(R.id.btn_rewind);
-        ImageButton resetButton = findViewById(R.id.btn_replay);
-        ImageButton playButton = findViewById(R.id.btn_play);
-        ImageButton fastFwdButton = findViewById(R.id.btn_forward);
-        ImageButton settingsButton = findViewById(R.id.btn_settings);
-        leftHandButton = findViewById(R.id.btn_left);
-        rightHandButton = findViewById(R.id.btn_right);
-        midiButton = findViewById(R.id.btn_midi);
-        pianoButton = findViewById(R.id.btn_piano);
-        speedText = findViewById(R.id.txt_speed);
-        speedBar = findViewById(R.id.speed_bar);
+                ImageButton backButton = findViewById(R.id.btn_back);
+                ImageButton rewindButton = findViewById(R.id.btn_rewind);
+                ImageButton resetButton = findViewById(R.id.btn_replay);
+                ImageButton playButton = findViewById(R.id.btn_play);
+                ImageButton fastFwdButton = findViewById(R.id.btn_forward);
+                ImageButton settingsButton = findViewById(R.id.btn_settings);
+                leftHandButton = findViewById(R.id.btn_left);
+                rightHandButton = findViewById(R.id.btn_right);
+                midiButton = findViewById(R.id.btn_midi);
+                pianoButton = findViewById(R.id.btn_piano);
+                speedText = findViewById(R.id.txt_speed);
+                speedBar = findViewById(R.id.speed_bar);
 
-        backButton.setOnClickListener(v -> activity.onBackPressed());
-        rewindButton.setOnClickListener(v -> Rewind());
-        resetButton.setOnClickListener(v -> Reset());
-        playButton.setOnClickListener(v -> Play());
-        fastFwdButton.setOnClickListener(v -> FastForward());
-        settingsButton.setOnClickListener(v -> {
-            drawer.deselect();
-            drawer.openDrawer();
-        });
-        midiButton.setOnClickListener(v -> toggleMidi());
-        leftHandButton.setOnClickListener(v -> toggleTrack(LEFT_TRACK));
-        rightHandButton.setOnClickListener(v -> toggleTrack(RIGHT_TRACK));
-        pianoButton.setOnClickListener(v -> togglePiano());
+                backButton.setOnClickListener(v -> activity.onBackPressed());
+                rewindButton.setOnClickListener(v -> Rewind());
+                resetButton.setOnClickListener(v -> Reset());
+                playButton.setOnClickListener(v -> Play());
+                fastFwdButton.setOnClickListener(v -> FastForward());
+                settingsButton.setOnClickListener(v -> {
+                    drawer.deselect();
+                    drawer.openDrawer();
+                });
+                midiButton.setOnClickListener(v -> toggleMidi());
+                leftHandButton.setOnClickListener(v -> toggleTrack(LEFT_TRACK));
+                rightHandButton.setOnClickListener(v -> toggleTrack(RIGHT_TRACK));
+                pianoButton.setOnClickListener(v -> togglePiano());
 
-        // Resize the speedBar so all toolbar icons fit on the screen
-        speedBar.post(
-                () -> {
-                    int iconsWidth = backButton.getWidth() + resetButton.getWidth() + playButton.getWidth() +
-                            rewindButton.getWidth() + fastFwdButton.getWidth() + midiButton.getWidth() +
-                            leftHandButton.getWidth() + rightHandButton.getWidth() + pianoButton.getWidth() +
-                            settingsButton.getWidth();
-                    int screenwidth = activity.getWindowManager().getDefaultDisplay().getWidth();
-                    speedBar.setLayoutParams(
-                            new LayoutParams(screenwidth - iconsWidth - 16, speedBar.getHeight()));
-                }
-        );
+                // Resize the speedBar so all toolbar icons fit on the screen
+                speedBar.post(
+                        () -> {
+                            int iconsWidth = backButton.getWidth() + resetButton.getWidth() + playButton.getWidth() +
+                                    rewindButton.getWidth() + fastFwdButton.getWidth() + midiButton.getWidth() +
+                                    leftHandButton.getWidth() + rightHandButton.getWidth() + pianoButton.getWidth() +
+                                    settingsButton.getWidth();
+                            int screenwidth = activity.getWindowManager().getDefaultDisplay().getWidth();
+                            speedBar.setLayoutParams(
+                                    new LayoutParams(screenwidth - iconsWidth - 16, speedBar.getHeight()));
+                        }
+                );
 
-        speedBar.getProgressDrawable().setColorFilter(Color.parseColor("#00BB87"), PorterDuff.Mode.SRC_IN);
-        speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
-                // If speed bar is between 97 and 103 approximate it to 100
-                if(97 < progress && progress < 103) {
-                    progress = 100;
-                    bar.setProgress(progress);
-                }
-                speedText.setText(String.format(Locale.US, "%3d", progress) + "%");
-            }
-            public void onStartTrackingTouch(SeekBar bar) {
-            }
-            public void onStopTrackingTouch(SeekBar bar) {
-            }
-        });
+                speedBar.getProgressDrawable().setColorFilter(Color.parseColor("#00BB87"), PorterDuff.Mode.SRC_IN);
+                speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
+                        // If speed bar is between 97 and 103 approximate it to 100
+                        if (97 < progress && progress < 103) {
+                            progress = 100;
+                            bar.setProgress(progress);
+                        }
+                        speedText.setText(String.format(Locale.US, "%3d", progress) + "%");
+                    }
+
+                    public void onStartTrackingTouch(SeekBar bar) {
+                    }
+
+                    public void onStopTrackingTouch(SeekBar bar) {
+                    }
+                });
+                break;
+            case Tip:
+                inflate(activity, R.layout.tips_play_button, this);
+
+                Button playTipButton = findViewById(R.id.btn_play_tip);
+                playTipButton.setOnClickListener(v -> Play());
+                break;
+            default:
+                break;
+        }
+
+
 
         /* Initialize the timer used for playback, but don't start
          * the timer yet (enabled = false).
@@ -359,7 +376,9 @@ public class MidiPlayer extends LinearLayout {
       public void run() {
         if (playstate == paused || playstate == stopped) {
             sheet.ShadeNotes((int)currentPulseTime, (int)-10, SheetMusic.ImmediateScroll);
-            piano.ShadeNotes((int)currentPulseTime, (int)prevPulseTime);
+            if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+                piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
+            }
         }
       }
     };
@@ -384,8 +403,8 @@ public class MidiPlayer extends LinearLayout {
      */ 
     private void CreateMidiFile() {
         double inverse_tempo = 1.0 / midifile.getTime().getTempo();
-        double inverse_tempo_scaled = inverse_tempo * speedBar.getProgress() / 100.0;
-        // double inverse_tempo_scaled = inverse_tempo * 100.0 / 100.0;
+//        double inverse_tempo_scaled = inverse_tempo * speedBar.getProgress() / 100.0;
+         double inverse_tempo_scaled = inverse_tempo * 100.0 / 100.0;
         options.tempo = (int)(1.0 / inverse_tempo_scaled);
         pulsesPerMsec = midifile.getTime().getQuarter() * (1000.0 / options.tempo);
 
@@ -467,15 +486,18 @@ public class MidiPlayer extends LinearLayout {
      */
     private void Play() {
         if (midifile == null || sheet == null || numberTracks() == 0) {
+            Log.d("is_played", "沒有檔案");
             return;
         }
         else if (playstate == initStop || playstate == initPause || playstate == playing) {
+            Log.d("is_played", "正在撥放，狀態不對");
             return;
         }
         // playstate is stopped or paused
 
         // Hide the midi player, wait a little for the view
         // to refresh, and then start playing
+        Log.d("is_played", "有按下去");
         this.setVisibility(View.GONE);
         RemoveShading();
         timer.removeCallbacks(TimerCallback);
@@ -520,7 +542,9 @@ public class MidiPlayer extends LinearLayout {
         timer.postDelayed(TimerCallback, 100);
 
         sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.GradualScroll);
-        piano.ShadeNotes((int)currentPulseTime, (int)prevPulseTime);
+        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+            piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
+        }
       }
     };
 
@@ -590,8 +614,10 @@ public class MidiPlayer extends LinearLayout {
     void RemoveShading() {
         sheet.ShadeNotes(-10, (int)prevPulseTime, SheetMusic.DontScroll);
         sheet.ShadeNotes(-10, (int)currentPulseTime, SheetMusic.DontScroll);
-        piano.ShadeNotes(-10, (int)prevPulseTime);
-        piano.ShadeNotes(-10, (int)currentPulseTime);
+        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+            piano.ShadeNotes(-10, (int) prevPulseTime);
+            piano.ShadeNotes(-10, (int) currentPulseTime);
+        }
     }
 
     /**
@@ -603,7 +629,9 @@ public class MidiPlayer extends LinearLayout {
         currentPulseTime = startPulseTime;
         prevPulseTime = -10;
         sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.ImmediateScroll);
-        piano.ShadeNotes((int)currentPulseTime, (int)prevPulseTime);
+        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+            piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
+        }
     }
 
     /** Rewind the midi music back one measure.
@@ -684,7 +712,9 @@ public class MidiPlayer extends LinearLayout {
 
         /* Remove any highlighted notes */
         sheet.ShadeNotes(-10, (int)currentPulseTime, SheetMusic.DontScroll);
-        piano.ShadeNotes(-10, (int)currentPulseTime);
+        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+            piano.ShadeNotes(-10, (int)currentPulseTime);
+        }
 
         currentPulseTime = sheet.PulseTimeForPoint(new Point(x, y));
         prevPulseTime = currentPulseTime - midifile.getTime().getMeasure();
@@ -692,7 +722,9 @@ public class MidiPlayer extends LinearLayout {
             currentPulseTime -= midifile.getTime().getMeasure();
         }
         sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.DontScroll);
-        piano.ShadeNotes((int)currentPulseTime, (int)prevPulseTime);
+        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+            piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
+        }
     }
 
 
@@ -734,7 +766,9 @@ public class MidiPlayer extends LinearLayout {
                 return;
             }
             sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.GradualScroll);
-            piano.ShadeNotes((int)currentPulseTime, (int)prevPulseTime);
+            if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+                piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
+            }
             timer.postDelayed(TimerCallback, 100);
         }
         else if (playstate == initPause) {
@@ -744,7 +778,9 @@ public class MidiPlayer extends LinearLayout {
             prevPulseTime = currentPulseTime;
             currentPulseTime = startPulseTime + msec * pulsesPerMsec;
             sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.ImmediateScroll);
-            piano.ShadeNotes((int)currentPulseTime, (int)prevPulseTime);
+            if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+                piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
+            }
             playstate = paused;
             timer.postDelayed(ReShade, 1000);
         }
