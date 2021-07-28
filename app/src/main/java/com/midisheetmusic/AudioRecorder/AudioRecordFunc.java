@@ -4,9 +4,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.util.Log;
 
 public class AudioRecordFunc {
     // 缓冲区字节大小
@@ -18,14 +23,23 @@ public class AudioRecordFunc {
     //NewAudioName可播放的音频文件
     private String NewAudioName = "" ;
 
-    private AudioRecord audioRecord;
-    private boolean isRecord = false ; // 设置正在录制的状态
+    private final List<String> filesName = new ArrayList<>();
 
+    private AudioRecord audioRecord;
+    private boolean isReset = false;
+    private boolean isRecord = false ; // 设置正在录制的状态
+    public final static int STATUS_NOT_READY=0;
+    public final static int STATUS_READY=1;
+    public final static int STATUS_START=2;
+    public final static int STATUS_PAUSE=3;
+    public final static int STATUS_STOP=4;
+    private int status=STATUS_NOT_READY;
 
     private static AudioRecordFunc mInstance;
+    private final ExecutorService mExecutorService;
 
     public AudioRecordFunc(){
-
+        mExecutorService = Executors.newCachedThreadPool();
     }
 
     public synchronized static AudioRecordFunc getInstance()
@@ -39,20 +53,27 @@ public class AudioRecordFunc {
         //判断是否有外部存储设备sdcard
         if (AudioFileFunc.isSdcardExit())
         {
-            if (isRecord)
+            if (status==STATUS_START)
             {
                 return ErrorCode.E_STATE_RECODING;
             }
             else
             {
                 if (audioRecord == null )
-                    creatAudioRecord();
+                    createAudioRecord();
 
                 audioRecord.startRecording();
-                // 让录制状态为true
-                isRecord = true ;
-                // 开启音频文件写入线程
-                new Thread( new AudioRecordThread()).start();
+
+
+                mExecutorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        writeDataTOFile();
+//                        if(status == STATUS_STOP)
+//                            copyWaveFile(FileUtils.getPcmFileAbsolutePath(AudioName), FileUtils.getWavFileAbsolutePath(AudioName));
+                    }
+                });
+//                new Thread(new AudioRecordThread()).start();
 
                 return ErrorCode.SUCCESS;
             }
@@ -74,6 +95,87 @@ public class AudioRecordFunc {
         return AudioFileFunc.getFileSize(NewAudioName);
     }
 
+    public void pauseRecord(){
+        if (status != STATUS_START) {
+            throw new IllegalStateException("沒有在錄音");
+        } else {
+            audioRecord.stop();
+            status = STATUS_PAUSE;
+        }
+    }
+
+    public void stopRecord() {
+        if (status == STATUS_NOT_READY || status == STATUS_READY) {
+            throw new IllegalStateException("錄音尚未開始");
+        } else {
+            audioRecord.stop();
+            status = STATUS_STOP;
+            release();
+        }
+    }
+
+    public void release() {
+        //假如有暫停錄音
+        try {
+            if (filesName.size() > 0) {
+                List<String> filePaths = new ArrayList<>();
+                for (String fileName : filesName) {
+                    filePaths.add(FileUtils.getPcmFileAbsolutePath(fileName));
+                }
+                //清除
+                filesName.clear();
+                //將多個pcm文件轉化爲wav文件
+//                if(filePaths.size()!=1)
+                    mergePCMFilesToWAVFile(filePaths);
+
+
+            }
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException(e.getMessage());
+        }
+
+        if (audioRecord != null) {
+            audioRecord.release();
+            audioRecord = null;
+        }
+        status = STATUS_NOT_READY;
+    }
+
+    public void resetRecord() {
+        clearPcmFiles();
+        AudioName = null;
+        if(audioRecord != null){
+            audioRecord.release();
+            audioRecord = null;
+        }
+        status = STATUS_NOT_READY;
+    }
+
+    public void deleteRecord(){
+        File file = new File(FileUtils.getWavFileAbsolutePath(AudioName));
+        if(file.exists()){
+            file.delete();
+        }
+        AudioName = null;
+    }
+
+    private void clearPcmFiles() {
+        if (filesName.size() > 0) {
+            List<String> filePaths = new ArrayList<>();
+            for (String fileName : filesName) {
+                filePaths.add(FileUtils.getPcmFileAbsolutePath(fileName));
+            }
+
+            for (int i = 0; i < filePaths.size(); i++) {
+                File file = new File(filePaths.get(i));
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+            filesName.clear();
+
+        }
+    }
 
     private void close() {
         if (audioRecord != null ) {
@@ -86,12 +188,13 @@ public class AudioRecordFunc {
     }
 
 
-    private void creatAudioRecord() {
+    private void createAudioRecord() {
         // 获取音频文件路径
 
-        AudioName = AudioFileFunc.getRawFilePath();
-        NewAudioName = AudioFileFunc.getWavFilePath();
-     
+        AudioName = ""+ System.currentTimeMillis();
+//        AudioName = AudioFileFunc.getRawFilePath();
+//        NewAudioName = AudioFileFunc.getWavFilePath();
+
         // 获得缓冲区字节大小
         bufferSizeInBytes = AudioRecord.getMinBufferSize(AudioFileFunc.AUDIO_SAMPLE_RATE,
                 AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT);
@@ -102,26 +205,34 @@ public class AudioRecordFunc {
     }
 
 
-    class AudioRecordThread implements Runnable {
-        @Override
-        public void run() {
-            writeDateTOFile(); //往文件中写入裸数据
-            copyWaveFile(AudioName, NewAudioName); //给裸数据加上头文件
-        }
-    }
+//    class AudioRecordThread implements Runnable {
+//        @Override
+//        public void run() {
+//            writeDataTOFile(); //往文件中写入裸数据
+////            if(filesName)
+////                copyWaveFile(AudioName, NewAudioName); //给裸数据加上头文件
+//        }
+//    }
 
     /**
      * 这里将数据写入文件，但是并不能播放，因为AudioRecord获得的音频是原始的裸音频，
      * 如果需要播放就必须加入一些格式或者编码的头信息。但是这样的好处就是你可以对音频的 裸数据进行处理，比如你要做一个爱说话的TOM
      * 猫在这里就进行音频的处理，然后重新封装 所以说这样得到的音频比较容易做一些音频的处理。
      */
-    private void writeDateTOFile() {
+    private void writeDataTOFile() {
         // new一个byte数组用来存一些字节数据，大小为缓冲区大小
         byte [] audiodata = new byte [bufferSizeInBytes];
         FileOutputStream fos = null ;
         int readsize = 0 ;
+
         try {
-            File file = new File(AudioName);
+            String currentFileName = AudioName;
+            if (status == STATUS_PAUSE) {
+                //假如是暂停录音 将文件名后面加个数字,防止重名文件内容被覆盖
+                currentFileName += filesName.size();
+            }
+            filesName.add(currentFileName);
+            File file = new File(FileUtils.getPcmFileAbsolutePath(currentFileName));
             if (file.exists()) {
                 file.delete();
             }
@@ -130,7 +241,9 @@ public class AudioRecordFunc {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        while (isRecord == true ) {
+
+        status = STATUS_START;
+        while (status == STATUS_START ) {
             readsize = audioRecord.read(audiodata, 0 , bufferSizeInBytes);
             if (AudioRecord.ERROR_INVALID_OPERATION != readsize && fos!= null ) {
                 try {
@@ -146,6 +259,21 @@ public class AudioRecordFunc {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void mergePCMFilesToWAVFile(final List<String> filePaths) {
+        mExecutorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (PcmToWav.mergePCMFilesToWAVFile(filePaths, FileUtils.getWavFileAbsolutePath(AudioName))) {
+                    //操作成功
+                } else {
+                    //操作失败
+                    Log.e("AudioRecorder", "mergePCMFilesToWAVFile fail");
+                    throw new IllegalStateException("mergePCMFilesToWAVFile fail");
+                }
+            }
+        });
     }
 
     // 这里得到可播放的音频文件

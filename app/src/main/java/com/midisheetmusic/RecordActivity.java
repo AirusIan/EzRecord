@@ -8,14 +8,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.os.Environment;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -24,10 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import java.io.File;
-import java.io.IOException;
+
 import com.midisheetmusic.AudioRecorder.AudioRecordFunc;
 public class RecordActivity extends AppCompatActivity {
 
@@ -46,9 +38,13 @@ public class RecordActivity extends AppCompatActivity {
 
     private String fileName = null;
     ImageButton btn_record = null;
+    ImageButton btn_stop = null;
+    ImageButton btn_reset = null;
+    ImageButton btn_delete = null;
 
     long startRecorderTime = 0;
     long stopRecorderTime = 0;
+    long pauseOffset = 0;
     AudioRecordFunc mAudioRecordFunc = new AudioRecordFunc();
 
     @Override
@@ -62,24 +58,63 @@ public class RecordActivity extends AppCompatActivity {
         checkPermission();
 
         btn_record = (ImageButton) findViewById(R.id.btn_mic);
+        btn_stop = (ImageButton) findViewById(R.id.btn_check);
+        btn_reset = (ImageButton) findViewById(R.id.btn_reset);
+        btn_delete = (ImageButton) findViewById(R.id.btn_delete);
         chronometer_timer = (Chronometer) findViewById(R.id.timer);
+        chronometer_timer.setBase(SystemClock.elapsedRealtime());
 
-        btn_record.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        try {
 
-                if(!status) {
-                    doStart();
-                    chronometer_timer.setBase(SystemClock.elapsedRealtime());
-                    chronometer_timer.start();
+
+            btn_record.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    status = !status;
+                    btn_record.setSelected(!btn_record.isSelected());
+                    if (btn_record.isSelected()) {
+                        doStart();
+                        chronometer_timer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
+                        chronometer_timer.start();
+                    } else {
+                        doPause();
+                        chronometer_timer.stop();
+                        pauseOffset = SystemClock.elapsedRealtime() - chronometer_timer.getBase();
+                    }
                 }
-                else {
+            });
+            btn_stop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btn_record.setSelected(false);
                     doStop();
                     chronometer_timer.stop();
+                    pauseOffset = SystemClock.elapsedRealtime() - chronometer_timer.getBase();
                 }
-            }
-        });
+            });
 
+
+            btn_reset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btn_record.setSelected(false);
+                    doReset();
+                    chronometer_timer.setBase(SystemClock.elapsedRealtime());
+                    pauseOffset = 0;
+                }
+            });
+
+            btn_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    doDelete();
+                    chronometer_timer.setBase(SystemClock.elapsedRealtime());
+                    pauseOffset = 0;
+                }
+            });
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -101,7 +136,7 @@ public class RecordActivity extends AppCompatActivity {
         }
         //記錄開始錄音時間，用於統計時長，小於3秒中，錄音不傳送
 
-        status = true;
+//        status = true;
         Toast.makeText(RecordActivity.this, "錄音開始，請開始唱歌", Toast.LENGTH_SHORT).show();
 
         return true;
@@ -112,7 +147,7 @@ public class RecordActivity extends AppCompatActivity {
      *
      * @return
      */
-    private boolean doStop() {
+    private boolean doPause() {
         try {
             final int second = (int) (stopRecorderTime - startRecorderTime) / 1000;
 //            //按住時間小於3秒鐘，算作錄取失敗，不進行傳送
@@ -121,15 +156,54 @@ public class RecordActivity extends AppCompatActivity {
 //                status = false;
 //                return true;
 //            }
-            mAudioRecordFunc.stopRecordAndFile();
+            mAudioRecordFunc.pauseRecord();
             stopRecorderTime = System.currentTimeMillis();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        status = false;
+//        status = false;
+        Toast.makeText(RecordActivity.this, "錄音暫停 ", Toast.LENGTH_SHORT).show();
+
+        return true;
+    }
+
+    private boolean doStop() {
+        try {
+            mAudioRecordFunc.stopRecord();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//        status = false;
         Toast.makeText(RecordActivity.this, "錄音結束，轉檔開始", Toast.LENGTH_SHORT).show();
+
+        return true;
+    }
+
+    private boolean doReset() {
+        try {
+            mAudioRecordFunc.resetRecord();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//        status = false;
+        Toast.makeText(RecordActivity.this, "捨棄錄音檔", Toast.LENGTH_SHORT).show();
+
+        return true;
+    }
+
+    private boolean doDelete(){
+        try {
+            mAudioRecordFunc.deleteRecord();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        Toast.makeText(RecordActivity.this, "刪除錄音檔", Toast.LENGTH_SHORT).show();
 
         return true;
     }
