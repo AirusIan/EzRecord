@@ -183,7 +183,7 @@ public class MidiPlayer extends LinearLayout {
 
     /** Create the rewind, play, stop, and fast forward buttons */
     void init() {
-        switch(TipsSheetActivity.sheet_type){
+        switch(SheetType.sheet_type){
             case Normal:
                 inflate(activity, R.layout.player_toolbar, this);
 
@@ -251,6 +251,9 @@ public class MidiPlayer extends LinearLayout {
                 Button playTipButton = findViewById(R.id.btn_play_tip);
                 playTipButton.setOnClickListener(v -> Play());
                 break;
+
+            case Edit:
+
             default:
                 break;
         }
@@ -376,7 +379,7 @@ public class MidiPlayer extends LinearLayout {
       public void run() {
         if (playstate == paused || playstate == stopped) {
             sheet.ShadeNotes((int)currentPulseTime, (int)-10, SheetMusic.ImmediateScroll);
-            if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+            if(SheetType.sheet_type == SheetType.Sheet_type_list.Normal) {
                 piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
             }
         }
@@ -542,7 +545,7 @@ public class MidiPlayer extends LinearLayout {
         timer.postDelayed(TimerCallback, 100);
 
         sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.GradualScroll);
-        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+        if(SheetType.sheet_type == SheetType.Sheet_type_list.Normal) {
             piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
         }
       }
@@ -614,7 +617,7 @@ public class MidiPlayer extends LinearLayout {
     void RemoveShading() {
         sheet.ShadeNotes(-10, (int)prevPulseTime, SheetMusic.DontScroll);
         sheet.ShadeNotes(-10, (int)currentPulseTime, SheetMusic.DontScroll);
-        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+        if(SheetType.sheet_type == SheetType.Sheet_type_list.Normal) {
             piano.ShadeNotes(-10, (int) prevPulseTime);
             piano.ShadeNotes(-10, (int) currentPulseTime);
         }
@@ -629,7 +632,7 @@ public class MidiPlayer extends LinearLayout {
         currentPulseTime = startPulseTime;
         prevPulseTime = -10;
         sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.ImmediateScroll);
-        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+        if(SheetType.sheet_type == SheetType.Sheet_type_list.Normal) {
             piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
         }
     }
@@ -712,8 +715,8 @@ public class MidiPlayer extends LinearLayout {
 
         /* Remove any highlighted notes */
         sheet.ShadeNotes(-10, (int)currentPulseTime, SheetMusic.DontScroll);
-        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
-            piano.ShadeNotes(-10, (int)currentPulseTime);
+        if(SheetType.sheet_type == SheetType.Sheet_type_list.Normal) {
+            piano.ShadeNotes(-10, (int) currentPulseTime);
         }
 
         currentPulseTime = sheet.PulseTimeForPoint(new Point(x, y));
@@ -722,7 +725,7 @@ public class MidiPlayer extends LinearLayout {
             currentPulseTime -= midifile.getTime().getMeasure();
         }
         sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.DontScroll);
-        if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+        if(SheetType.sheet_type == SheetType.Sheet_type_list.Normal) {
             piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
         }
     }
@@ -766,7 +769,7 @@ public class MidiPlayer extends LinearLayout {
                 return;
             }
             sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.GradualScroll);
-            if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+            if(SheetType.sheet_type == SheetType.Sheet_type_list.Normal) {
                 piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
             }
             timer.postDelayed(TimerCallback, 100);
@@ -778,7 +781,7 @@ public class MidiPlayer extends LinearLayout {
             prevPulseTime = currentPulseTime;
             currentPulseTime = startPulseTime + msec * pulsesPerMsec;
             sheet.ShadeNotes((int)currentPulseTime, (int)prevPulseTime, SheetMusic.ImmediateScroll);
-            if(TipsSheetActivity.sheet_type == TipsSheetActivity.Sheet_type.Normal) {
+            if(SheetType.sheet_type == SheetType.Sheet_type_list.Normal) {
                 piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
             }
             playstate = paused;

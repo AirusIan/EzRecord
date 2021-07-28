@@ -6,30 +6,20 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.midisheetmusic.sheets.ClefSymbol;
-import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.zip.CRC32;
 
-import static com.midisheetmusic.TipsSheetActivity.Sheet_type.Normal;
-import static com.midisheetmusic.TipsSheetActivity.Sheet_type.Tip;
+import static com.midisheetmusic.SheetType.Sheet_type_list.Tip;
 
 public class TipsSheetActivity extends MidiHandlingActivity{
     private Button btn_go_back;
     private TextView textView;
-    public enum Sheet_type {Normal, Tip;}
-    public static Sheet_type sheet_type;
 
 
     //樂譜
@@ -46,7 +36,7 @@ public class TipsSheetActivity extends MidiHandlingActivity{
     private byte[] data;
 
     public void onCreate(Bundle state){
-        sheet_type = Tip;
+        SheetType.sheet_type = Tip;
         super.onCreate(state);
         setTitle("MidiSheetMusic: PlayTips");
         setContentView(R.layout.play_tips_sheet);
@@ -111,6 +101,7 @@ public class TipsSheetActivity extends MidiHandlingActivity{
     public void onBackPressed() {
         Intent intent = new Intent();
         setResult(Activity.RESULT_OK, intent);
+        SheetType.sheet_type = SheetType.Sheet_type_list.Edit;
         super.onBackPressed();
     }
 
@@ -158,6 +149,12 @@ public class TipsSheetActivity extends MidiHandlingActivity{
     @Override
     void OnMidiNote(int note, boolean pressed) {
 
+    }
+
+    @Override
+    protected void onStop() {
+        SheetType.sheet_type = SheetType.Sheet_type_list.Edit;
+        super.onStop();
     }
 }
 

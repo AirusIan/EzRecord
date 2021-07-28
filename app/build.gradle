@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.android.application'
+apply plugin: 'com.chaquo.python'
 
 repositories {
     maven {
@@ -16,6 +18,22 @@ android {
         applicationId "com.ditek.midisheetmusic"
         minSdkVersion 21
         targetSdkVersion 28
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+
+        python {
+            // 指定python路径
+            buildPython "D:\\Anaconda3\\envs\\Android_FinalProject\\python.exe"
+            // 安装python库
+            pip {
+                install "numpy"
+                install "librosa"
+            }
+        }
+
     }
 
     buildTypes {

@@ -86,7 +86,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        TipsSheetActivity.sheet_type = TipsSheetActivity.Sheet_type.Normal;
+        SheetType.sheet_type = SheetType.Sheet_type_list.Normal;
 
         // Hide the navigation bar before the views are laid out
         hideSystemUI();

@@ -1,27 +1,12 @@
 package com.midisheetmusic;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import com.midisheetmusic.R;
-import com.midisheetmusic.drawerItems.ExpandableSwitchDrawerItem;
-import com.midisheetmusic.sheets.ClefSymbol;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondarySwitchDrawerItem;
-import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 
 import java.util.zip.CRC32;
 
@@ -41,6 +26,7 @@ public class EditorActivity extends  MidiHandlingActivity {
     public void onCreate(Bundle state) {
         try {
             super.onCreate(state);
+            SheetType.sheet_type = SheetType.Sheet_type_list.Edit;
             setTitle("MidiSheetMusic: Welcome");
             // Load the list of songs
             setContentView(R.layout.editor_bar);
@@ -133,5 +119,11 @@ public class EditorActivity extends  MidiHandlingActivity {
     @Override
     void OnMidiNote(int note, boolean pressed) {
 
+    }
+
+    @Override
+    protected void onStop() {
+        SheetType.sheet_type = SheetType.Sheet_type_list.Normal;
+        super.onStop();
     }
 }

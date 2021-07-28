@@ -935,7 +935,7 @@ public class SheetMusic extends SurfaceView implements SurfaceHolder.Callback, S
      *  new notes to shade/unshade) onto the bitmap, and then draw the bitmap.
      *
      *  We include the MidiPlayer height (since we hide the MidiPlayer
-     *  once the music starts playing). Also, we make the bitmap twice as
+     *      *  once the music starts playing). Also, we make the bitmap twice as
      *  large as the scroll viewable area, so that we don't need to
      *  refresh the bufferCanvas on every scroll change.
      */

@@ -16,6 +16,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.os.*;
 import android.view.View;
@@ -37,6 +38,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public void onCreate(Bundle state) {
         try {
             super.onCreate(state);
+            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             setTitle("MidiSheetMusic: Welcome");
             // Load the list of songs
             setContentView(R.layout.welcome);
@@ -111,6 +113,7 @@ public class WelcomeActivity extends AppCompatActivity {
 //        }
         clayout.getBackground().setAlpha(0);
         btn_record.regainBackground();
+        btn_record.setText("Record Now");
 
     }
 
