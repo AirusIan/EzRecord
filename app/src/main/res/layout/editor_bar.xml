@@ -16,37 +16,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/music_96"
-            android:layout_width="0dp" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:autoText="false"
-            android:gravity="center|center_vertical"
-            android:text="常用音符"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            app:autoSizeTextType="none" />
-
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/music_96"
-            android:layout_width="0dp" />
 
         <Button
+            android:id="@+id/button5"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_rewind"
+            android:text="返回" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:drawableLeft="@android:drawable/ic_delete"
+            android:text="刪除" />
+
+        <Button
+            android:id="@+id/btn_go_tips"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_emoji_objects"
+            android:text="靈感" />
+        android:drawable
+        <Button
             android:id="@+id/button"
-            android:layout_width="0dp"
+            android:layout_width="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:drawableLeft="@android:drawable/ic_menu_save"
@@ -54,59 +51,26 @@
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="0dp"
+            android:layout_width="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:drawableLeft="@android:drawable/ic_delete"
-            android:text="取消" />
+            android:drawableLeft="@drawable/ic_music_note"
+            android:text="符號" />
 
     </LinearLayout>
+
 
     <LinearLayout
-        android:layout_width="158dp"
-        android:layout_height="370dp"
-        android:background="@drawable/border"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarlayout_of_editor_bar">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border"
-            android:gravity="center|center_vertical|fill_vertical"
-            android:text="Note"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textColorHighlight="#FFFFFF"
-            android:textColorHint="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:autoSizeTextType="none" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="Claf"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border"
-            android:gravity="center"
-            android:text="Accid"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:id="@+id/editor_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarlayout_of_editor_bar"
+        app:layout_constraintVertical_bias="0.0"></LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

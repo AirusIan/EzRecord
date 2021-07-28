@@ -5,50 +5,134 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/tips_menu"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:layout_constraintStart_toStartof="parent"
-            app:srcCompat="@drawable/ic_menu" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Tips"
-            android:textColor="@color/md_white_1000"
-            android:textSize="16pt"
-            app:layout_constraintEnd_toEndof="parent"/>
-
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="608dp"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="75dp"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout">
-
-    </ScrollView>
-
-    <ImageButton
-        android:id="@+id/btn_shuffle"
+    <Button
+        android:id="@+id/btn_go_back"
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_shuffle"
-        android:text="btn_shuffle"
+        android:layout_height="42dp"
+        android:drawableLeft="@drawable/ic_rewind"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="返回"
+        android:textColor="@color/IconColor"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="選擇想要的曲風"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.100000024" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_happy"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="50dp"
+                android:layout_weight="1"
+                android:backgroundTint="#FF1414"
+                android:text="快樂"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/btn_inspiring"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="50dp"
+                android:layout_weight="1"
+                android:backgroundTint="#FF8114"
+                android:text="激勵"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/btn_depressing"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+
+                android:backgroundTint="#EB09008A"
+                android:text="哀愁"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_relaxing"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:backgroundTint="#0CD520"
+                android:text="放鬆"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/btn_solemn"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:backgroundTint="#ED7C12B6"
+                android:text="莊嚴"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/btn_romantic"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:backgroundTint="#F13F7B"
+                android:text="浪漫"
+                android:textSize="24sp" />
+        </LinearLayout>
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

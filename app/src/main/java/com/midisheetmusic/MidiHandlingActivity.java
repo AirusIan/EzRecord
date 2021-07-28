@@ -34,6 +34,7 @@ public abstract class MidiHandlingActivity extends AbstractSingleMidiActivity {
         log("MIDI Input device connected: " + midiInputDevice.getManufacturerName() + " - " + midiInputDevice.getProductName());
     }
 
+
     @Override
     public void onMidiOutputDeviceAttached(@NonNull MidiOutputDevice midiOutputDevice) {
     }

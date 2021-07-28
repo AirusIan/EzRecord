@@ -8,9 +8,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.Environment;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -19,7 +24,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.midisheetmusic.AudioRecorder.AudioRecordFunc;
 public class RecordActivity extends AppCompatActivity {
 
@@ -47,6 +61,8 @@ public class RecordActivity extends AppCompatActivity {
     long pauseOffset = 0;
     AudioRecordFunc mAudioRecordFunc = new AudioRecordFunc();
 
+    String newWavFile = "";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +72,8 @@ public class RecordActivity extends AppCompatActivity {
 
         //檢查權限
         checkPermission();
+
+        initPython();
 
         btn_record = (ImageButton) findViewById(R.id.btn_mic);
         btn_stop = (ImageButton) findViewById(R.id.btn_check);
@@ -180,6 +198,19 @@ public class RecordActivity extends AppCompatActivity {
 //        status = false;
         Toast.makeText(RecordActivity.this, "錄音結束，轉檔開始", Toast.LENGTH_SHORT).show();
 
+        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String wavFilePath = fileBasePath+ "/recorderdemo/WavFile/" + fileName + ".wav";
+        String midiFilePath = fileBasePath+ "/recorderdemo/MidiFile/" + fileName + ".mid";
+
+        File file = new File(midiFilePath);
+        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+
+        callAudio2midi(wavFilePath, midiFilePath);
+
+        Uri uri = Uri.parse("file://" + midiFilePath);
+        FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
+
+        doOpenFile(fileuri);
         return true;
     }
 
@@ -205,8 +236,61 @@ public class RecordActivity extends AppCompatActivity {
         }
         Toast.makeText(RecordActivity.this, "刪除錄音檔", Toast.LENGTH_SHORT).show();
 
+        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String wavFilePath = fileBasePath+ "/recorderdemo/WavFile/" + fileName + ".wav";
+        String midiFilePath = fileBasePath+ "/recorderdemo/MidiFile/" + fileName + ".mid";
+
+        File file = new File(midiFilePath);
+        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+
+        callAudio2midi(wavFilePath, midiFilePath);
+
+        Uri uri = Uri.parse("file://" + midiFilePath);
+        FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
+
+        doOpenFile(fileuri);
+
         return true;
     }
+
+    public void doOpenFile(FileUri file) {
+        byte[] data = file.getData(this);
+        if (data == null || data.length <= 6 || !MidiFile.hasMidiHeader(data)) {
+            ChooseSongActivity.showErrorDialog("Error: Unable to open song: " + file.toString(), this);
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, file.getUri(), this, SheetMusicActivity.class);
+        intent.putExtra(SheetMusicActivity.MidiTitleID, file.toString());
+
+
+        startActivity(intent);
+    }
+
+    // 初始化python
+    private void initPython(){
+        if (! Python.isStarted()) {
+            Python.start(new AndroidPlatform(this));
+        }
+    }
+
+    private void callAudio2midi(String file_in, String file_out){
+        try {
+            Toast.makeText(RecordActivity.this, "轉檔開始", Toast.LENGTH_SHORT).show();
+            Python py = Python.getInstance();
+            PyObject pyObject_result = py.getModule("audio2midi").callAttr("run", file_in, file_out);
+            py.getBuiltins().get("help").call();
+            int result = pyObject_result.toJava(Integer.class);
+            if (result == 0) {
+                Toast.makeText(RecordActivity.this, "轉檔成功", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(RecordActivity.this, "轉檔失敗", Toast.LENGTH_SHORT).show();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 权限申请

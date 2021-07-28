@@ -22,6 +22,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +76,8 @@ public class SheetMusicActivity extends MidiHandlingActivity {
     private MidiOptions options; /* The options for sheet music and sound */
     private long midiCRC;        /* CRC of the midi bytes */
     private Drawer drawer;
-
+    private Uri uri;
+    private String title;
      /** Create this SheetMusicActivity.
       * The Intent should have two parameters:
       * - data: The uri of the midi file to open.
@@ -84,6 +86,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
+        SheetType.sheet_type = SheetType.Sheet_type_list.Normal;
 
         // Hide the navigation bar before the views are laid out
         hideSystemUI();
@@ -97,12 +100,13 @@ public class SheetMusicActivity extends MidiHandlingActivity {
         TimeSigSymbol.LoadImages(this);
 
         // Parse the MidiFile from the raw bytes
-        Uri uri = this.getIntent().getData();
+        uri = this.getIntent().getData();
+        Log.d("URI_Name",uri.toString());
         if (uri == null) {
             this.finish();
             return;
         }
-        String title = this.getIntent().getStringExtra(MidiTitleID);
+        title = this.getIntent().getStringExtra(MidiTitleID);
         if (title == null) {
             title = uri.getLastPathSegment();
         }
@@ -117,7 +121,6 @@ public class SheetMusicActivity extends MidiHandlingActivity {
             this.finish();
             return;
         }
-
         // Initialize the settings (MidiOptions).
         // If previous settings have been saved, use those
         options = new MidiOptions(midifile);
@@ -139,7 +142,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
     }
 
     /* Create the MidiPlayer and Piano views */
-    void createViews() {
+   public void createViews() {
         layout = findViewById(R.id.sheet_content);
 
         SwitchDrawerItem scrollVertically = new SwitchDrawerItem()
@@ -271,8 +274,8 @@ public class SheetMusicActivity extends MidiHandlingActivity {
                 showSaveImagesDialog();
                 drawer.closeDrawer();
                 break;
-            case R.id.song_tips:
-                tips();
+            case R.id.song_editor:
+                editor();
                 break;
             case R.id.song_record:
                 record();
@@ -322,18 +325,12 @@ public class SheetMusicActivity extends MidiHandlingActivity {
     }
 
 
-
     /** To change the sheet music options, start the SettingsActivity.
      *  Pass the current MidiOptions as a parameter to the Intent.
      *  Also pass the 'default' MidiOptions as a parameter to the Intent.
      *  When the SettingsActivity has finished, the onActivityResult()
      *  method will be called.
      */
-    private void tips() {
-        Intent intent = new Intent();
-        intent.setClass(this, TipsActivity.class);
-        startActivity(intent);
-    }
 //這裡為新增功能，前往record頁面
     private void record() {
         Intent intent = new Intent();
@@ -341,6 +338,13 @@ public class SheetMusicActivity extends MidiHandlingActivity {
         startActivity(intent);
     }
 
+//新增功能，前往editor頁面
+    private void editor() {
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri, this, EditorActivity.class);
+        intent.putExtra(EditorActivity.MidiTitleID, title);
+        intent.setClass(this, EditorActivity.class);
+        startActivity(intent);
+    }
     private void changeSettings() {
         MidiOptions defaultOptions = new MidiOptions(midifile);
         Intent intent = new Intent(this, SettingsActivity.class);

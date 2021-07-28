@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <Button
+        android:id="@+id/btn_play_tip"
+        android:layout_width="55pt"
+        android:layout_height="25pt"
+        android:backgroundTint="#20DF00"
+        android:drawableStart="@drawable/ic_play"
+        android:text="播放" />
+
+    <Space
+        android:layout_width="100pt"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="55pt"
+        android:layout_height="25pt"
+        android:backgroundTint="#FF0000"
+        android:drawableStart="@android:drawable/ic_input_add"
+        android:text="加入樂譜" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

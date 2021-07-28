@@ -1,6 +1,7 @@
 package com.midisheetmusic.AudioRecorder;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import android.media.MediaRecorder;
 import android.os.Environment;
@@ -82,6 +83,10 @@ public class AudioFileFunc {
         if (!mFile.exists())
             return - 1 ;
         return mFile.length();
+    }
+
+    public static String getFileName(){
+        return Long.toString(currentTime);
     }
 
 }

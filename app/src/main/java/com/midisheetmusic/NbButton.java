@@ -53,7 +53,7 @@ public class NbButton extends Button {
         isMorphing=false;
 
         backDrawable=new GradientDrawable();
-        int colorDrawable=getResources().getColor(R.color.md_pink_200);
+        int colorDrawable=getResources().getColor(R.color.md_blue_400);
         backDrawable.setColor(colorDrawable);
         backDrawable.setCornerRadius(120);
         setBackground(backDrawable);

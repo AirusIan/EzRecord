@@ -19,10 +19,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -64,6 +66,15 @@ public class ChooseSongActivity extends TabActivity {
                 .setIndicator("Browse", new BitmapDrawable(this.getResources(), browseFilesIcon))
                 .setContent(new Intent(this, FileBrowserActivity.class)));
 
+        for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)
+        {
+
+            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#1177EE")); //Changing background color of tab
+
+            TextView tv = (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title); /*for Selected Tab changing text color*/
+            tv.setTextColor(Color.WHITE);
+        }
+
     }
 
     public static void openFile(FileUri file) {
@@ -79,6 +90,8 @@ public class ChooseSongActivity extends TabActivity {
         updateRecentFile(file);
         Intent intent = new Intent(Intent.ACTION_VIEW, file.getUri(), this, SheetMusicActivity.class);
         intent.putExtra(SheetMusicActivity.MidiTitleID, file.toString());
+
+
         startActivity(intent);
     }
 
