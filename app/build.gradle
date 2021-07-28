@@ -31,6 +31,7 @@ android {
             pip {
                 install "numpy"
                 install "librosa"
+                install "midiutil"
             }
         }
 

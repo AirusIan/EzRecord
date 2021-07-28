@@ -65,8 +65,9 @@ public class AudioRecordFunc {
 
     }
 
-    public void stopRecordAndFile() {
+    public String stopRecordAndFile() {
         close();
+        return AudioFileFunc.getFileName();
     }
 
 
