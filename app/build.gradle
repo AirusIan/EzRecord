@@ -26,7 +26,9 @@ android {
 
         python {
             // 指定python路径
-            buildPython "D:\\Anaconda3\\envs\\Android_FinalProject\\python.exe"
+//            C:\Users\User\anaconda3\envs\myenv\python.exe 昭穎的路徑(防止被蓋掉_備用)
+            buildPython "C:\\Users\\User\\anaconda3\\envs\\myenv\\python.exe"
+
             // 安装python库
             pip {
                 install "numpy"
