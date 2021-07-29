@@ -38,6 +38,8 @@ public class AudioRecordFunc {
     private static AudioRecordFunc mInstance;
     private final ExecutorService mExecutorService;
 
+    private static long currentTime=0;
+
     public AudioRecordFunc(){
         mExecutorService = Executors.newCachedThreadPool();
     }
@@ -86,9 +88,8 @@ public class AudioRecordFunc {
 
     }
 
-    public String getFileName() {
-//        close();
-        return AudioFileFunc.getFileName();
+    public static String getFileName() {
+        return Long.toString(currentTime);
     }
 
 
@@ -193,8 +194,9 @@ public class AudioRecordFunc {
 
     private void createAudioRecord() {
         // 获取音频文件路径
+        currentTime = System.currentTimeMillis();
 
-        AudioName = ""+ System.currentTimeMillis();
+        AudioName = ""+ currentTime;
 //        AudioName = AudioFileFunc.getRawFilePath();
 //        NewAudioName = AudioFileFunc.getWavFilePath();
 
