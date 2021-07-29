@@ -123,9 +123,7 @@ public class RecordActivity extends AppCompatActivity {
                     pauseOffset = 0;
                 }
             });
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+
     }
 
 
@@ -147,7 +145,7 @@ public class RecordActivity extends AppCompatActivity {
         }
         //記錄開始錄音時間，用於統計時長，小於3秒中，錄音不傳送
 
-        status = true;
+//        status = true;
         Toast.makeText(RecordActivity.this, "錄音開始，請開始唱歌", Toast.LENGTH_SHORT).show();
 
         return true;
@@ -183,6 +181,7 @@ public class RecordActivity extends AppCompatActivity {
     private boolean doStop() {
         try {
             mAudioRecordFunc.stopRecord();
+            fileName = mAudioRecordFunc.getFileName();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,20 +189,6 @@ public class RecordActivity extends AppCompatActivity {
 
 //        status = false;
         Toast.makeText(RecordActivity.this, "錄音結束，轉檔開始", Toast.LENGTH_SHORT).show();
-
-        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String wavFilePath = fileBasePath+ "/recorderdemo/WavFile/" + fileName + ".wav";
-        String midiFilePath = fileBasePath+ "/recorderdemo/MidiFile/" + fileName + ".mid";
-
-        File file = new File(midiFilePath);
-        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
-
-        callAudio2midi(wavFilePath, midiFilePath);
-
-        Uri uri = Uri.parse("file://" + midiFilePath);
-        FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
-
-        doOpenFile(fileuri);
 
         ProgressDialog_Modify p = new ProgressDialog_Modify();
         p.execute();
@@ -232,20 +217,6 @@ public class RecordActivity extends AppCompatActivity {
         }
         Toast.makeText(RecordActivity.this, "刪除錄音檔", Toast.LENGTH_SHORT).show();
 
-        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String wavFilePath = fileBasePath+ "/recorderdemo/WavFile/" + fileName + ".wav";
-        String midiFilePath = fileBasePath+ "/recorderdemo/MidiFile/" + fileName + ".mid";
-
-        File file = new File(midiFilePath);
-        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
-
-        callAudio2midi(wavFilePath, midiFilePath);
-
-        Uri uri = Uri.parse("file://" + midiFilePath);
-        FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
-
-        doOpenFile(fileuri);
-
         return true;
     }
 
@@ -258,6 +229,8 @@ public class RecordActivity extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_VIEW, file.getUri(), this, SheetMusicActivity.class);
         intent.putExtra(SheetMusicActivity.MidiTitleID, file.toString());
+
+
         startActivity(intent);
     }
 
@@ -270,6 +243,7 @@ public class RecordActivity extends AppCompatActivity {
 
     private void callAudio2midi(String file_in, String file_out){
         try {
+            Toast.makeText(RecordActivity.this, "轉檔開始", Toast.LENGTH_SHORT).show();
             Python py = Python.getInstance();
             PyObject pyObject_result = py.getModule("audio2midi").callAttr("run", file_in, file_out);
             py.getBuiltins().get("help").call();

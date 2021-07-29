@@ -86,8 +86,8 @@ public class AudioRecordFunc {
 
     }
 
-    public String stopRecordAndFile() {
-        close();
+    public String getFileName() {
+//        close();
         return AudioFileFunc.getFileName();
     }
 
@@ -153,11 +153,13 @@ public class AudioRecordFunc {
     }
 
     public void deleteRecord(){
-        File file = new File(FileUtils.getWavFileAbsolutePath(AudioName));
-        if(file.exists()){
-            file.delete();
+        if(audioRecord == null && AudioName != null) {
+            File file = new File(FileUtils.getWavFileAbsolutePath(AudioName));
+            if (file.exists()) {
+                file.delete();
+            }
+            AudioName = null;
         }
-        AudioName = null;
     }
 
     private void clearPcmFiles() {

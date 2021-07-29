@@ -24,6 +24,10 @@
             android:id="@+id/btn_check"
             style="@style/ToolbarButtonStyle"
             android:src="@drawable/ic_check" />
+        <ImageButton
+            android:id="@+id/btn_reset"
+            style="@style/ToolbarButtonStyle"
+            android:src="@drawable/ic_reset" />
 
         <ImageButton
             android:id="@+id/btn_delete"
