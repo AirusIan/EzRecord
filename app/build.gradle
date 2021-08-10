@@ -30,7 +30,7 @@ android {
 //            C:\Users\User\anaconda3\envs\myenv\python.exe 昭穎的路徑(防止被蓋掉_備用)
 //            C:\\Users\\pody\\anaconda3\\python.exe 秉宏
 //            D:\Anaconda3\envs\Android_FinalProject\python.exe 建名的路徑
-            buildPython "D:\\Anaconda3\\envs\\Android_FinalProject\\python.exe"
+            buildPython "C:\\Users\\User\\anaconda3\\envs\\myenv\\python.exe"
 
             // 安装python库
             pip {
