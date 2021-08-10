@@ -98,7 +98,7 @@ public class TipsSongActivity extends AppCompatActivity {
     }
 
     public void doOpenFile(FileUri file) {
-        byte[] data = file.getData(this);
+        byte[] data = file.getData(this);//確認打開的資料並非為空，如果為空則顯示錯誤訊息
         if (data == null || data.length <= 6 || !MidiFile.hasMidiHeader(data)) {
             ChooseSongActivity.showErrorDialog("Error: Unable to open song: " + file.toString(), this);
             return;
