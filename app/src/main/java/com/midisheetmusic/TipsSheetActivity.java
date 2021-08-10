@@ -110,10 +110,6 @@ public class TipsSheetActivity extends MidiHandlingActivity{
         layout_button = findViewById(R.id.layout_button);
         player = new MidiPlayer(this);
         layout_button.addView(player);
-//        player.setDrawer(drawer);
-//        piano = new Piano(this);
-//        layout.addView(piano);
-//        player.SetPiano(piano);
         layout.requestLayout();
         layout_button.requestLayout();
         player.setSheetUpdateRequestListener(() -> createSheetMusic(options));
@@ -126,13 +122,10 @@ public class TipsSheetActivity extends MidiHandlingActivity{
             layout.removeView(sheet);
         }
 
-//        piano.setVisibility(options.showPiano ? View.VISIBLE : View.GONE);
         sheet = new SheetMusic(this);
         sheet.init(midifile, options);
         sheet.setPlayer(player);
         layout.addView(sheet);
-//        piano.SetMidiFile(midifile, options, player);
-//        piano.SetShadeColors(options.shade1Color, options.shade2Color);
 
         player.SetMidiFile(midifile, options, sheet);
 //        player.updateToolbarButtons(); //考慮是否加入
