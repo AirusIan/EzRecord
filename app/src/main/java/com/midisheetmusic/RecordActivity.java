@@ -1,21 +1,20 @@
 package com.midisheetmusic;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Environment;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -24,17 +23,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
+
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
 import com.midisheetmusic.AudioRecorder.AudioRecordFunc;
+
 public class RecordActivity extends AppCompatActivity {
 
     /*
@@ -52,9 +49,13 @@ public class RecordActivity extends AppCompatActivity {
 
     private String fileName = null;
     ImageButton btn_record = null;
+    ImageButton btn_stop = null;
+    ImageButton btn_reset = null;
+    ImageButton btn_delete = null;
 
     long startRecorderTime = 0;
     long stopRecorderTime = 0;
+    long pauseOffset = 0;
     AudioRecordFunc mAudioRecordFunc = new AudioRecordFunc();
 
     String newWavFile = "";
@@ -72,23 +73,56 @@ public class RecordActivity extends AppCompatActivity {
         initPython();
 
         btn_record = (ImageButton) findViewById(R.id.btn_mic);
+        btn_stop = (ImageButton) findViewById(R.id.btn_check);
+        btn_reset = (ImageButton) findViewById(R.id.btn_reset);
+        btn_delete = (ImageButton) findViewById(R.id.btn_delete);
         chronometer_timer = (Chronometer) findViewById(R.id.timer);
 
-        btn_record.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(!status) {
-                    doStart();
-                    chronometer_timer.setBase(SystemClock.elapsedRealtime());
-                    chronometer_timer.start();
+            btn_record.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    status = !status;
+                    btn_record.setSelected(!btn_record.isSelected());
+                    if (btn_record.isSelected()) {
+                        doStart();
+                        chronometer_timer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
+                        chronometer_timer.start();
+                    } else {
+                        doPause();
+                        chronometer_timer.stop();
+                        pauseOffset = SystemClock.elapsedRealtime() - chronometer_timer.getBase();
+                    }
                 }
-                else {
+            });
+            btn_stop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btn_record.setSelected(false);
                     doStop();
                     chronometer_timer.stop();
+                    pauseOffset = SystemClock.elapsedRealtime() - chronometer_timer.getBase();
                 }
-            }
-        });
+            });
+
+
+            btn_reset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btn_record.setSelected(false);
+                    doReset();
+                    chronometer_timer.setBase(SystemClock.elapsedRealtime());
+                    pauseOffset = 0;
+                }
+            });
+
+            btn_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    doDelete();
+                    chronometer_timer.setBase(SystemClock.elapsedRealtime());
+                    pauseOffset = 0;
+                }
+            });
 
     }
 
@@ -111,7 +145,7 @@ public class RecordActivity extends AppCompatActivity {
         }
         //記錄開始錄音時間，用於統計時長，小於3秒中，錄音不傳送
 
-        status = true;
+//        status = true;
         Toast.makeText(RecordActivity.this, "錄音開始，請開始唱歌", Toast.LENGTH_SHORT).show();
 
         return true;
@@ -122,7 +156,7 @@ public class RecordActivity extends AppCompatActivity {
      *
      * @return
      */
-    private boolean doStop() {
+    private boolean doPause() {
         try {
             final int second = (int) (stopRecorderTime - startRecorderTime) / 1000;
 //            //按住時間小於3秒鐘，算作錄取失敗，不進行傳送
@@ -131,29 +165,57 @@ public class RecordActivity extends AppCompatActivity {
 //                status = false;
 //                return true;
 //            }
-            fileName = mAudioRecordFunc.stopRecordAndFile();
+            mAudioRecordFunc.pauseRecord();
             stopRecorderTime = System.currentTimeMillis();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        status = false;
+//        status = false;
+        Toast.makeText(RecordActivity.this, "錄音暫停 ", Toast.LENGTH_SHORT).show();
+
+        return true;
+    }
+
+    private boolean doStop() {
+        try {
+            mAudioRecordFunc.stopRecord();
+            fileName = mAudioRecordFunc.getFileName();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//        status = false;
         Toast.makeText(RecordActivity.this, "錄音結束，轉檔開始", Toast.LENGTH_SHORT).show();
 
-        String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String wavFilePath = fileBasePath+ "/recorderdemo/WavFile/" + fileName + ".wav";
-        String midiFilePath = fileBasePath+ "/recorderdemo/MidiFile/" + fileName + ".mid";
+        ProgressDialog_Modify p = new ProgressDialog_Modify();
+        p.execute();
+        return true;
+    }
 
-        File file = new File(midiFilePath);
-        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+    private boolean doReset() {
+        try {
+            mAudioRecordFunc.resetRecord();
 
-        callAudio2midi(wavFilePath, midiFilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Uri uri = Uri.parse("file://" + midiFilePath);
-        FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
+//        status = false;
+        Toast.makeText(RecordActivity.this, "捨棄錄音檔", Toast.LENGTH_SHORT).show();
 
-        doOpenFile(fileuri);
+        return true;
+    }
+
+    private boolean doDelete(){
+        try {
+            mAudioRecordFunc.deleteRecord();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        Toast.makeText(RecordActivity.this, "刪除錄音檔", Toast.LENGTH_SHORT).show();
 
         return true;
     }
@@ -181,16 +243,10 @@ public class RecordActivity extends AppCompatActivity {
 
     private void callAudio2midi(String file_in, String file_out){
         try {
-            Toast.makeText(RecordActivity.this, "轉檔開始", Toast.LENGTH_SHORT).show();
             Python py = Python.getInstance();
             PyObject pyObject_result = py.getModule("audio2midi").callAttr("run", file_in, file_out);
             py.getBuiltins().get("help").call();
-            int result = pyObject_result.toJava(Integer.class);
-            if (result == 0) {
-                Toast.makeText(RecordActivity.this, "轉檔成功", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(RecordActivity.this, "轉檔失敗", Toast.LENGTH_SHORT).show();
-            }
+            pyObject_result.toJava(Integer.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -235,6 +291,49 @@ public class RecordActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 200) {
             checkPermission();
+        }
+    }
+
+    private class  ProgressDialog_Modify extends AsyncTask<Void,Void,Void>{
+
+        ProgressDialog mProgressDialog = null;
+        String midiFilePath = "";
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = new ProgressDialog(RecordActivity.this);
+            // 设置进度条的形式为圆形转动的进度条
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            // 设置是否可以通过点击Back键取消
+            mProgressDialog.setCancelable(false);
+            // 设置在点击Dialog外是否取消Dialog进度条
+            mProgressDialog.setCanceledOnTouchOutside(false);
+            // 设置提示的title的图标，默认是没有的，如果没有设置title的话只设置Icon是不会显示图标的
+            mProgressDialog.setIcon(R.mipmap.ic_launcher);
+            mProgressDialog.setTitle("轉檔進度");
+            mProgressDialog.setMessage("轉檔中，請燒等...");
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            String wavFilePath = fileBasePath + "/recorderdemo/WavFile/" + fileName + ".wav";
+            midiFilePath = fileBasePath + "/recorderdemo/MidiFile/" + fileName + ".mid";
+
+            callAudio2midi(wavFilePath, midiFilePath);
+            mProgressDialog.cancel();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            File file = new File(midiFilePath);
+            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+            Uri uri = Uri.parse("file://" + midiFilePath);
+            FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
+            doOpenFile(fileuri);
+            mProgressDialog.cancel();
         }
     }
 
