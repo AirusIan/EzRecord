@@ -130,10 +130,7 @@ public class EditorActivity extends  MidiHandlingActivity {
         });
     }
     public void onbackClick(View view) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri, this, SheetMusicActivity.class);
-        intent.putExtra(SheetMusicActivity.MidiTitleID, title);
-        intent.setClass(this, SheetMusicActivity.class);
-        startActivity(intent);
+        super.onBackPressed();
     }
     public void noteClick(View view) {
     ic_music_note.setVisibility(View.GONE);

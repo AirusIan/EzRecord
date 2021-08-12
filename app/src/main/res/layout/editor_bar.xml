@@ -115,7 +115,7 @@
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_emoji_objects"
             android:text="靈感" />
-        android:drawable
+
         <Button
             android:id="@+id/ic_menu_save"
             android:layout_width="20dp"
@@ -125,7 +125,7 @@
             android:text="儲存" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/ic_music_note"
             android:layout_width="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
