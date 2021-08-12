@@ -30,7 +30,7 @@ import java.sql.Time;
 import java.util.TimerTask;
 import java.util.zip.CRC32;
 
-public class EditorActivity extends  MidiHandlingActivity {
+public class EditorActivity extends MidiHandlingActivity {
     public static final String MidiTitleID = "MidiTitleID";
     private MidiPlayer player;   /* The play/stop/rewind toolbar */
     private Piano piano;         /* The piano at the top */
@@ -84,18 +84,18 @@ public class EditorActivity extends  MidiHandlingActivity {
 
 
             //***********
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         tips(); //go to tips
         btn_save = findViewById(R.id.btn_save);
-        btn_save.setOnClickListener((s)->{
+        btn_save.setOnClickListener((s) -> {
             save();
         });
 
     }
+
     public void createViews() {
         layout = findViewById(R.id.editor_content);
 
@@ -103,6 +103,7 @@ public class EditorActivity extends  MidiHandlingActivity {
         player.setSheetUpdateRequestListener(() -> createSheetMusic(options));
         createSheetMusic(options);
     }
+
     private void
     createSheetMusic(MidiOptions options) {
         if (sheet != null) {
@@ -117,6 +118,7 @@ public class EditorActivity extends  MidiHandlingActivity {
         layout.requestLayout();
         sheet.draw();
     }
+
     private void hideSystemUI() {
         // Enables sticky immersive mode.
         View decorView = getWindow().getDecorView();
@@ -135,7 +137,7 @@ public class EditorActivity extends  MidiHandlingActivity {
     //前往tips頁面
     private void tips() {
         btn_tips = findViewById(R.id.btn_go_tips);
-        btn_tips.setOnClickListener((tips)->{
+        btn_tips.setOnClickListener((tips) -> {
             Intent intent = new Intent();
             intent.setClass(this, TipsActivity.class);
             startActivity(intent);
@@ -144,59 +146,62 @@ public class EditorActivity extends  MidiHandlingActivity {
 
     //存檔
     private void save() {
-            if(isExternalStorageWritable() && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                View v = getLayoutInflater().inflate(R.layout.save_midi_dialog,null);
-                v.setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                                // Set the content to appear under the system bars so that the
-                                // content doesn't resize when the system bars hide and show.
-                                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                // Hide the nav bar and status bar
-                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_FULLSCREEN);
-                EditText editText = v.findViewById(R.id.editor_EditText);
-                new AlertDialog.Builder(this)
-                        .setTitle("儲存檔案")
-                        .setMessage("如果檔名相同會覆蓋，請注意")
-                        .setView(v)
-                        .setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                str_saveName = String.valueOf(editText.getText());
-                                if(str_saveName.equals("")){
-                                    Toast.makeText(EditorActivity.this, "檔名不得為空，儲存失敗", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    createFile();
-                                }
+        if (isExternalStorageWritable() && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            View v = getLayoutInflater().inflate(R.layout.save_midi_dialog, null);
+            v.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            // Set the content to appear under the system bars so that the
+                            // content doesn't resize when the system bars hide and show.
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            // Hide the nav bar and status bar
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+            EditText editText = v.findViewById(R.id.editor_EditText);
+            new AlertDialog.Builder(this)
+                    .setTitle("儲存檔案")
+                    .setMessage("如果檔名相同會覆蓋，請注意")
+                    .setView(v)
+                    .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            str_saveName = String.valueOf(editText.getText());
+                            if (str_saveName.equals("")) {
+                                Toast.makeText(EditorActivity.this, "檔名不得為空，儲存失敗", Toast.LENGTH_SHORT).show();
+                            } else {
+                                createFile();
                             }
-                        })
-                        .setNegativeButton("取消", null)
-                        .setCancelable(false)
-                        .show();
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .setCancelable(false)
+                    .show();
 
-            }else if(isExternalStorageWritable()){
-                Toast.makeText(this, "Storage failed", Toast.LENGTH_SHORT).show();
-            }else if(checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                Toast.makeText(this, "Permission failed", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(this, "exceptionally failed", Toast.LENGTH_SHORT).show();
-            }
+        } else if (isExternalStorageWritable()) {
+            Toast.makeText(this, "Storage failed", Toast.LENGTH_SHORT).show();
+        } else if (checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(this, "Permission failed", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "exceptionally failed", Toast.LENGTH_SHORT).show();
+        }
     }
+
     //權限確認
-    private boolean isExternalStorageWritable(){
-        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
-            Log.i("State","Yes, it is writable!");
+    private boolean isExternalStorageWritable() {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            Log.i("State", "Yes, it is writable!");
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    private boolean checkPermission(String permission){
+
+    private boolean checkPermission(String permission) {
         int check = ContextCompat.checkSelfPermission(this, permission);
-        return(check == PackageManager.PERMISSION_GRANTED);
+        return (check == PackageManager.PERMISSION_GRANTED);
     }
+
     private void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -208,16 +213,19 @@ public class EditorActivity extends  MidiHandlingActivity {
             }
         }
     }
+
     //建立檔案
-    private void createFile(){
-        str_saveName = str_saveName+".mid";
+    private void createFile() {
+        str_saveName = str_saveName + ".mid";
         String str = "content";
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath();
         String midiFilePath = filePath + "/midiSaveFile/" + str_saveName;
         File saved_file = new File(midiFilePath);
-        if (!saved_file.getParentFile().exists()) { saved_file.getParentFile().mkdirs(); }
+        if (!saved_file.getParentFile().exists()) {
+            saved_file.getParentFile().mkdirs();
+        }
         try {
-            if(!saved_file.exists()) {
+            if (!saved_file.exists()) {
                 saved_file.createNewFile();
             }
             //建立空白檔案.mid
@@ -226,7 +234,7 @@ public class EditorActivity extends  MidiHandlingActivity {
 
             FileUri fileUri = new FileUri(uri, title);
             FileOutputStream output = new FileOutputStream(saved_file);
-            byte [] bytes = fileUri.getData(this);
+            byte[] bytes = fileUri.getData(this);
             MidiFile midiFile = new MidiFile(fileUri.getData(this), fileUri.toString());
             output.write(bytes);
             output.close();
