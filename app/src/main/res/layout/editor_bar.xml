@@ -16,22 +16,96 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/eightnote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/eighthnote" />
+        <Button
+            android:id="@+id/dotquarternote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/dotquarternote" />
+        <Button
+            android:id="@+id/downnote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/downnote" />
+        <Button
+            android:id="@+id/halfnote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/halfnote" />
+        <Button
+            android:id="@+id/quarternote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/quarternote" />
+        <Button
+            android:id="@+id/quarterrest"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/quarterrest" />
+        <Button
+            android:id="@+id/sixteennote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/sixteennote" />
+        <Button
+            android:id="@+id/upnote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/upnote" />
+        <Button
+            android:id="@+id/wholenote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/wholenote" />
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/ic_rewind"
             android:layout_width="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_rewind"
+            android:onClick="onbackClick"
             android:text="返回" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/ic_delete"
             android:layout_width="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:drawableLeft="@android:drawable/ic_delete"
             android:text="刪除" />
+        <Button
+            android:id="@+id/ic_done"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_done"
+            android:visibility="gone"
+            android:onClick="doneClick"
+            android:text="完成" />
+
 
         <Button
             android:id="@+id/btn_go_tips"
@@ -40,9 +114,9 @@
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_emoji_objects"
             android:text="靈感" />
-        android:drawable
+
         <Button
-            android:id="@+id/button"
+            android:id="@+id/ic_menu_save"
             android:layout_width="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
@@ -50,12 +124,15 @@
             android:text="儲存" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/ic_music_note"
             android:layout_width="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_music_note"
+            android:onClick="noteClick"
             android:text="符號" />
+
+
 
     </LinearLayout>
 

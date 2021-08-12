@@ -22,6 +22,8 @@ public class EditorActivity extends  MidiHandlingActivity {
     private String title;
     private long midiCRC;
     private Button btn_tips; /*新增 連結tips by昭穎*/
+    private Button ic_rewind,ic_delete,ic_done,ic_menu_save,ic_music_note; //ic_rewind是backButton
+    private Button eightnote,dotquarternote,downnote,halfnote,quarternote,quarterrest,sixteennote,upnote,wholenote;
 
     public void onCreate(Bundle state) {
         try {
@@ -52,6 +54,24 @@ public class EditorActivity extends  MidiHandlingActivity {
             CRC32 crc = new CRC32();
             crc.update(data);
             midiCRC = crc.getValue();
+
+            ic_rewind = findViewById( R.id.ic_rewind);
+            ic_delete = findViewById( R.id.ic_delete);
+            ic_done = findViewById( R.id.ic_done);
+            ic_menu_save = findViewById( R.id.ic_menu_save);
+            ic_music_note = findViewById( R.id.ic_music_note);
+
+            eightnote = findViewById( R.id.eightnote);
+            dotquarternote = findViewById( R.id.dotquarternote);
+            downnote = findViewById( R.id.downnote);
+            halfnote = findViewById( R.id.halfnote);
+            quarternote = findViewById( R.id.quarternote);
+            quarterrest = findViewById( R.id.quarterrest);
+            sixteennote = findViewById( R.id.sixteennote);
+            upnote = findViewById( R.id.upnote);
+            wholenote = findViewById( R.id.wholenote);
+
+
             createViews();
 
 
@@ -108,6 +128,46 @@ public class EditorActivity extends  MidiHandlingActivity {
             intent.setClass(this, TipsActivity.class);
             startActivity(intent);
         });
+    }
+    public void onbackClick(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri, this, SheetMusicActivity.class);
+        intent.putExtra(SheetMusicActivity.MidiTitleID, title);
+        intent.setClass(this, SheetMusicActivity.class);
+        startActivity(intent);
+    }
+    public void noteClick(View view) {
+    ic_music_note.setVisibility(View.GONE);
+    ic_menu_save.setVisibility(View.GONE);
+    ic_done.setVisibility(View.VISIBLE);
+    ic_rewind.setVisibility(View.GONE);
+    btn_tips.setVisibility(View.GONE);
+
+    eightnote.setVisibility(View.VISIBLE);
+    dotquarternote.setVisibility(View.VISIBLE);
+    downnote.setVisibility(View.VISIBLE);
+    halfnote.setVisibility(View.VISIBLE);
+    quarternote.setVisibility(View.VISIBLE);
+    quarterrest.setVisibility(View.VISIBLE);
+    sixteennote.setVisibility(View.VISIBLE);
+    upnote.setVisibility(View.VISIBLE);
+    wholenote.setVisibility(View.VISIBLE);
+    }
+    public void doneClick(View view) {
+        ic_music_note.setVisibility(View.VISIBLE);
+        ic_menu_save.setVisibility(View.VISIBLE);
+        ic_done.setVisibility(View.GONE);
+        ic_rewind.setVisibility(View.VISIBLE);
+        btn_tips.setVisibility(View.VISIBLE);
+
+        eightnote.setVisibility(View.GONE);
+        dotquarternote.setVisibility(View.GONE);
+        downnote.setVisibility(View.GONE);
+        halfnote.setVisibility(View.GONE);
+        quarternote.setVisibility(View.GONE);
+        quarterrest.setVisibility(View.GONE);
+        sixteennote.setVisibility(View.GONE);
+        upnote.setVisibility(View.GONE);
+        wholenote.setVisibility(View.GONE);
     }
 
     @Override
