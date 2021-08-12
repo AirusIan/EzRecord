@@ -85,8 +85,4 @@ public class AudioFileFunc {
         return mFile.length();
     }
 
-    public static String getFileName(){
-        return Long.toString(currentTime);
-    }
-
 }

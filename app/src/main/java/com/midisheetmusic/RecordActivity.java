@@ -286,7 +286,6 @@ public class RecordActivity extends AppCompatActivity {
 
     private void callAudio2midi(String file_in, String file_out){
         try {
-            Toast.makeText(RecordActivity.this, "轉檔開始", Toast.LENGTH_SHORT).show();
             Python py = Python.getInstance();
             PyObject pyObject_result = py.getModule("audio2midi").callAttr("run", file_in, file_out);
             py.getBuiltins().get("help").call();

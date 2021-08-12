@@ -18,7 +18,6 @@ android {
         applicationId "com.ditek.midisheetmusic"
         minSdkVersion 21
         targetSdkVersion 28
-
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
@@ -27,9 +26,8 @@ android {
 
         python {
             // 指定python路径
-//            C:\Users\User\anaconda3\envs\myenv\python.exe 昭穎的路徑(防止被蓋掉_備用)
-//            C:\\Users\\pody\\anaconda3\\python.exe 秉宏
-            buildPython "C:\\Users\\pody\\anaconda3\\python.exe"
+            buildPython "C:\\Users\\HP-NB\\Anaconda3\\envs\\midi\\python.exe"
+
             // 安装python库
             pip {
                 install "numpy"

@@ -44,6 +44,8 @@ public class AudioRecordFunc {
     private final ExecutorService mExecutorService;
     private FileInputStream fis = null;
 
+    private static long currentTime=0;
+
     public AudioRecordFunc(){
         mExecutorService = Executors.newCachedThreadPool();
     }
@@ -92,9 +94,8 @@ public class AudioRecordFunc {
 
     }
 
-    public String getFileName() {
-//        close();
-        return AudioName;
+    public static String getFileName() {
+        return Long.toString(currentTime);
     }
 
 
@@ -199,8 +200,9 @@ public class AudioRecordFunc {
 
     private void createAudioRecord() {
         // 获取音频文件路径
+        currentTime = System.currentTimeMillis();
 
-        AudioName = ""+ System.currentTimeMillis();
+        AudioName = ""+ currentTime;
 //        AudioName = AudioFileFunc.getRawFilePath();
 //        NewAudioName = AudioFileFunc.getWavFilePath();
 
@@ -210,12 +212,6 @@ public class AudioRecordFunc {
         // 创建AudioRecord对象
         audioRecord = new AudioRecord(AudioFileFunc.AUDIO_INPUT, AudioFileFunc.AUDIO_SAMPLE_RATE,
                 AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, bufferSizeInBytes);
-
-//        AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
-//                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build();
-//
-//        AudioFormat audioFormat = new AudioFormat.Builder().setSampleRate(AudioFileFunc.AUDIO_SAMPLE_RATE)
-//                .setEncoding(AudioFormat.ENCODING_PCM_16BIT).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build();
     }
 
 

@@ -53,15 +53,17 @@ public class NbButton extends Button {
         isMorphing=false;
 
         backDrawable=new GradientDrawable();
-        int colorDrawable=getResources().getColor(R.color.md_blue_400);
-        backDrawable.setColor(colorDrawable);
-        backDrawable.setCornerRadius(120);
+        int colorDrawable=getResources().getColor(R.color.welcome);
+//        backDrawable.setColor(colorDrawable);
+        backDrawable.setStroke(5, colorDrawable);
+        backDrawable.setCornerRadius(150);
+
         setBackground(backDrawable);
 
         setText("Record Now");
 
         paint=new Paint();
-        paint.setColor(getResources().getColor(R.color.md_white_1000));
+        paint.setColor(getResources().getColor(R.color.welcome));
         paint.setStrokeWidth(4);
         paint.setStyle(Paint.Style.STROKE);
         paint.setTextSize(2);
