@@ -9,13 +9,17 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.util.Log;
 
 public class AudioRecordFunc {
     // 缓冲区字节大小
-    private int bufferSizeInBytes = 0 ;
+    private int bufferSizeInBytes = AudioRecord.getMinBufferSize(AudioFileFunc.AUDIO_SAMPLE_RATE,
+            AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT);
 
     //AudioName裸音频数据文件 ，麦克风
     private String AudioName = "" ;
@@ -26,6 +30,7 @@ public class AudioRecordFunc {
     private final List<String> filesName = new ArrayList<>();
 
     private AudioRecord audioRecord;
+    private AudioTrack audioTrack = null;
     private boolean isReset = false;
     private boolean isRecord = false ; // 设置正在录制的状态
     public final static int STATUS_NOT_READY=0;
@@ -37,6 +42,7 @@ public class AudioRecordFunc {
 
     private static AudioRecordFunc mInstance;
     private final ExecutorService mExecutorService;
+    private FileInputStream fis = null;
 
     public AudioRecordFunc(){
         mExecutorService = Executors.newCachedThreadPool();
@@ -88,7 +94,7 @@ public class AudioRecordFunc {
 
     public String getFileName() {
 //        close();
-        return AudioFileFunc.getFileName();
+        return AudioName;
     }
 
 
@@ -199,12 +205,17 @@ public class AudioRecordFunc {
 //        NewAudioName = AudioFileFunc.getWavFilePath();
 
         // 获得缓冲区字节大小
-        bufferSizeInBytes = AudioRecord.getMinBufferSize(AudioFileFunc.AUDIO_SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT);
+
 
         // 创建AudioRecord对象
         audioRecord = new AudioRecord(AudioFileFunc.AUDIO_INPUT, AudioFileFunc.AUDIO_SAMPLE_RATE,
                 AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, bufferSizeInBytes);
+
+//        AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
+//                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build();
+//
+//        AudioFormat audioFormat = new AudioFormat.Builder().setSampleRate(AudioFileFunc.AUDIO_SAMPLE_RATE)
+//                .setEncoding(AudioFormat.ENCODING_PCM_16BIT).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build();
     }
 
 
@@ -278,6 +289,66 @@ public class AudioRecordFunc {
             }
         });
     }
+
+    /**
+     * 播放合成后的wav文件
+     *
+     * @param filePath 文件的绝对路径
+     */
+    public void play(final String filePath) {
+        audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, AudioFileFunc.AUDIO_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO,
+                AudioFormat.ENCODING_PCM_16BIT, bufferSizeInBytes, AudioTrack.MODE_STREAM);
+        audioTrack.play();
+
+        mExecutorService.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                File file = new File(filePath);
+                try {
+                    fis = new FileInputStream(file);
+                    fis.skip(0x2c);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                byte[] buffer = new byte[bufferSizeInBytes];
+                try {
+                    while (fis.read(buffer) >= 0) {
+                        audioTrack.write(buffer, 0, buffer.length);
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+//                try{
+//                    if(fis != null){
+//                        fis.close();
+//                    }
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+            }
+        });
+    }
+
+    /**
+     * 释放audioTrack
+     */
+    public void releaseAudioTrack(){
+        if (audioTrack == null) {
+            return;
+        }
+        try {
+            fis.close();
+        } catch (Exception e) {
+        }
+        try {
+            audioTrack.stop();
+            audioTrack.release();
+        } catch (Exception e) {
+        }
+    }
+
+
 
     // 这里得到可播放的音频文件
     private void copyWaveFile(String inFilename, String outFilename) {

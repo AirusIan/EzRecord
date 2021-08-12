@@ -33,6 +33,11 @@
             android:id="@+id/btn_delete"
             style="@style/ToolbarButtonStyle"
             android:src="@drawable/ic_delete" />
+
+        <ImageButton
+            android:id="@+id/btn_music_note"
+            style="@style/ToolbarButtonStyle"
+            android:src="@drawable/ic_music_note" />
     </LinearLayout>
 
     <ImageButton

@@ -31,6 +31,7 @@ import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
 import com.midisheetmusic.AudioRecorder.AudioRecordFunc;
+import com.midisheetmusic.AudioRecorder.FileUtils;
 
 public class RecordActivity extends AppCompatActivity {
 
@@ -41,6 +42,7 @@ public class RecordActivity extends AppCompatActivity {
     int minute = 0;
      */
     boolean status = false;//錄音狀態:false為關閉 true為開啟
+    boolean isPlay = false;
 //    TextView record_timer;
     Chronometer chronometer_timer;
 
@@ -48,10 +50,12 @@ public class RecordActivity extends AppCompatActivity {
     MediaRecorder recorder = null;
 
     private String fileName = null;
+    ImageButton btn_play = null;
     ImageButton btn_record = null;
     ImageButton btn_stop = null;
     ImageButton btn_reset = null;
     ImageButton btn_delete = null;
+    ImageButton btn_music_note = null;
 
     long startRecorderTime = 0;
     long stopRecorderTime = 0;
@@ -72,12 +76,25 @@ public class RecordActivity extends AppCompatActivity {
 
         initPython();
 
+        btn_play = (ImageButton) findViewById(R.id.btn_play);
         btn_record = (ImageButton) findViewById(R.id.btn_mic);
         btn_stop = (ImageButton) findViewById(R.id.btn_check);
         btn_reset = (ImageButton) findViewById(R.id.btn_reset);
         btn_delete = (ImageButton) findViewById(R.id.btn_delete);
+        btn_music_note = (ImageButton) findViewById(R.id.btn_music_note);
         chronometer_timer = (Chronometer) findViewById(R.id.timer);
 
+            btn_play.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isPlay = !isPlay;
+                    if(isPlay) {
+                        doPlay();
+                    }else{
+                        doFinish();
+                    }
+                }
+            });
             btn_record.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -124,9 +141,37 @@ public class RecordActivity extends AppCompatActivity {
                 }
             });
 
+            btn_music_note.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ProgressDialog_Modify p = new ProgressDialog_Modify();
+                p.execute();
+            }
+        });
+
     }
 
 
+    private boolean doPlay(){
+        try {
+            mAudioRecordFunc.play(FileUtils.getWavFileAbsolutePath(fileName));
+        }catch (Exception e){
+            Toast.makeText(RecordActivity.this, "播放失敗", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    private boolean doFinish(){
+        try {
+            mAudioRecordFunc.releaseAudioTrack();
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        Toast.makeText(RecordActivity.this, "播放結束", Toast.LENGTH_SHORT).show();
+        return true;
+    }
     /**
      * 啟動錄音
      *
@@ -190,8 +235,6 @@ public class RecordActivity extends AppCompatActivity {
 //        status = false;
         Toast.makeText(RecordActivity.this, "錄音結束，轉檔開始", Toast.LENGTH_SHORT).show();
 
-        ProgressDialog_Modify p = new ProgressDialog_Modify();
-        p.execute();
         return true;
     }
 
