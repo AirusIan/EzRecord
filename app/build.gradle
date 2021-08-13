@@ -26,7 +26,7 @@ android {
 
         python {
             // 指定python路径
-            buildPython "C:\\Users\\HP-NB\\Anaconda3\\envs\\midi\\python.exe"
+            buildPython "C:\\Users\\User\\anaconda3\\envs\\myenv\\python.exe"
 
             // 安装python库
             pip {

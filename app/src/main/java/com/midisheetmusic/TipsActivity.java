@@ -9,7 +9,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class TipsActivity extends AppCompatActivity {
-
+//C:\Users\User\anaconda3\envs\myenv\python.exe
     private Button btn_go_back;
     private Button btn_happy;
     private Button btn_inspiring;
