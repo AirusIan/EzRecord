@@ -203,7 +203,6 @@ public class MidiFile {
     private int quarternote;          /** The number of pulses per quarter note */
     private int totalpulses;          /** The total length of the song, in pulses */
     private boolean trackPerChannel;  /** True if we've split each channel into a track */
-
     /* The list of Midi Events */
     public static final byte EventNoteOff         = (byte)0x80;
     public static final byte EventNoteOn          = (byte)0x90;
@@ -394,6 +393,7 @@ public class MidiFile {
 
     /** Return a String representation of a meta-event */
     private String MetaName(int ev) {
+
         if (ev == MetaEventSequence)
             return "MetaEventSequence";
         else if (ev == MetaEventText)
@@ -434,6 +434,25 @@ public class MidiFile {
 
     /** Get the total length (in pulses) of the song */
     public int getTotalPulses() { return totalpulses; }
+
+    public void DeleteNote(int NotePulseTime){
+        for (MidiTrack t : tracks) {
+            ArrayList<MidiNote> midiNotes = t.getNotes();
+            for(int i=0;i<midiNotes.size();i++){
+                if(midiNotes.get(i).getStartTime() == NotePulseTime){
+                    for(int j=0;j<midiNotes.size();j++){
+                        System.out.print(midiNotes.get(j).getStartTime()+" ");
+                    }
+                    System.out.println("");
+                    t.Delete(i);
+                    for(int j=0;j<midiNotes.size();j++){
+                        System.out.print(midiNotes.get(j).getStartTime()+" ");
+                    }
+                }
+            }
+
+        }
+    }
 
 
     /** Create a new MidiFile from the byte[] */

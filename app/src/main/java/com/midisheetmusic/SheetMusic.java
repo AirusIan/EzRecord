@@ -1346,8 +1346,11 @@ public class SheetMusic extends SurfaceView implements SurfaceHolder.Callback, S
         int y = 0;
         for (Staff staff : staffs) {
             if (scaledPoint.y >= y && scaledPoint.y <= y + staff.getHeight()) {
+                System.out.println(staff.PulseTimeForPoint(scaledPoint));
                 return staff.PulseTimeForPoint(scaledPoint);
+
             }
+
             y += staff.getHeight();
         }
         return -1;

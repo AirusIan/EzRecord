@@ -130,7 +130,6 @@ public class EditorActivity extends  MidiHandlingActivity {
         sheet.setPlayer(player);
         layout.addView(sheet);//將樂譜加入畫面
         player.SetMidiFile(midifile, options, sheet);
-        player.updateToolbarButtons();
         layout.requestLayout();
         sheet.draw();
     }
@@ -152,6 +151,13 @@ public class EditorActivity extends  MidiHandlingActivity {
 
     public void onbackClick(View view) {
         super.onBackPressed();
+    }
+    public void ondeleteClick(View view) {
+        int NotePulseTime = player.NotePulseTime();
+        System.out.println(NotePulseTime);
+        midifile.DeleteNote(NotePulseTime);
+        createViews();
+
     }
     public void noteClick(View view) {
     ic_music_note.setVisibility(View.GONE);
