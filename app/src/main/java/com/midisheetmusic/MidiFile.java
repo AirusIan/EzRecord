@@ -1204,6 +1204,40 @@ public class MidiFile {
         }
     }
 
+    /** 加入樂譜 Add another midi file notes to the end of current music sheet */
+    /* 讀取兩個midi檔案的音軌後，分別將新檔案的音軌合併至舊檔案 目前還缺乏加入的功能*/
+//    A. 試圖用miditrack去儲存 ( 改寫建構程式 )
+//    B. 把track轉成byte去合併
+//    C. 把檔案ShiftTime->Write 之後合併看看，估計是不行
+//    D. addNote by functin、byte[]
+    public void
+    AddSheet(ArrayList<MidiTrack> origin_tracks, ArrayList<MidiTrack> new_tracks)
+    {
+
+        ShiftTime(new_tracks, origin_tracks.get(0).getNotes().get(origin_tracks.get(0).getNotes().size()-1).getEndTime()+960);
+//        for (MidiTrack track : new_tracks){
+//            for (MidiNote note : track.getNotes()){
+//                Log.d("NoteMessage", note.toString());
+//                byte[] data = note.toString().getBytes();
+//                try {
+//                    String value = new String(data, "UTF-8");
+//                    Log.d("ByteData", value);
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+        MidiTrack ori_track = CombineToSingleTrack(origin_tracks);
+        MidiTrack new_track = CombineToSingleTrack(new_tracks);
+        ArrayList<MidiTrack> combined_track = new ArrayList();
+        combined_track.add(ori_track);
+        combined_track.add(new_track);
+        Log.d("ori_track_check", ori_track.toString());
+        Log.d("new_track_check", new_track.toString());
+
+//        return  CombineToTwoTracks(combined_track, timesig.getMeasure());
+    }
+
    
     /* Find the highest and lowest notes that overlap this interval (starttime to endtime).
      * This method is used by SplitTrack to determine which staff (top or bottom) a note
@@ -1485,6 +1519,7 @@ public class MidiFile {
             int prevtime = -1;
             for (MidiNote note : track.getNotes()) {
                 if (note.getStartTime() < prevtime) {
+                    Log.d("StartTime", "錯誤音符開始時間為:" + String.valueOf(note.getStartTime()));
                     throw new MidiFileException("Internal parsing error", 0);
                 }
                 prevtime = note.getStartTime();

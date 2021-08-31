@@ -21,6 +21,14 @@ public class TipsSheetActivity extends MidiHandlingActivity{
     private Button btn_go_back;
     private TextView textView;
 
+/*  1-1. 相同音檔 測試有沒有辦法直接讀取音軌的全部聲音然後加入至樂譜後面
+    1-2. 相同音檔做檔案合併測試
+    補：這裡需要抓取原音軌最後endTime
+    2. 嘗試儲存成新的檔案
+    3. 讀取不同檔案的音軌並加入
+    4. 開始實作加入樂譜, 如何在不同activity更改其他activity的內容
+    補：要怎麼抓取檔案? Tips的音檔inflact在不同xml, 且套用了MidiPlayer。
+*/
 
     //樂譜
     public static final String MidiTitleID = "MidiTitleID";

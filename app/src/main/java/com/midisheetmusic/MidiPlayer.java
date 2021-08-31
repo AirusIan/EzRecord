@@ -249,7 +249,9 @@ public class MidiPlayer extends LinearLayout {
                 inflate(activity, R.layout.tips_play_button, this);
 
                 Button playTipButton = findViewById(R.id.btn_play_tip);
+                Button btn_addSheet = findViewById(R.id.btn_add);
                 playTipButton.setOnClickListener(v -> Play());
+                btn_addSheet.setOnClickListener(a -> checkFile(midifile.getFileName()));
                 break;
 
             case Edit:
