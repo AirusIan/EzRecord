@@ -1211,29 +1211,31 @@ public class MidiFile {
 //    C. 把檔案ShiftTime->Write 之後合併看看，估計是不行
 //    D. addNote by functin、byte[]
     public void
-    AddSheet(ArrayList<MidiTrack> origin_tracks, ArrayList<MidiTrack> new_tracks)
+    AddSheet(MidiFile midiFile, ArrayList<MidiTrack> new_tracks)
     {
+        ArrayList<MidiNote> noteArrayList = new ArrayList<MidiNote>();
+        int i = 0;
+//        midiFile.getTracks().get(0).AddNote(new MidiNote(midiFile.EndTime()+120, 1, 60, 120));
+//        ShiftTime(new_tracks, midiFile.EndTime()+120);
+        for (MidiTrack track : new_tracks){
+            for (MidiNote note : track.getNotes()){
+                MidiNote new_note = note;
+                new_note.setStartTime(midiFile.EndTime()+120);
+                noteArrayList.add(new_note);
+                Log.d("NoteMessage", new_note.toString());
+                midiFile.getTracks().get(0).AddNote(noteArrayList.get(i));
+                i++;
+            }
+        }
 
-        ShiftTime(new_tracks, origin_tracks.get(0).getNotes().get(origin_tracks.get(0).getNotes().size()-1).getEndTime()+960);
-//        for (MidiTrack track : new_tracks){
-//            for (MidiNote note : track.getNotes()){
-//                Log.d("NoteMessage", note.toString());
-//                byte[] data = note.toString().getBytes();
-//                try {
-//                    String value = new String(data, "UTF-8");
-//                    Log.d("ByteData", value);
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-        MidiTrack ori_track = CombineToSingleTrack(origin_tracks);
-        MidiTrack new_track = CombineToSingleTrack(new_tracks);
-        ArrayList<MidiTrack> combined_track = new ArrayList();
-        combined_track.add(ori_track);
-        combined_track.add(new_track);
-        Log.d("ori_track_check", ori_track.toString());
-        Log.d("new_track_check", new_track.toString());
+
+//        MidiTrack ori_track = CombineToSingleTrack(origin_tracks);
+//        MidiTrack new_track = CombineToSingleTrack(new_tracks);
+//        ArrayList<MidiTrack> combined_track = new ArrayList();
+//        combined_track.add(ori_track);
+//        combined_track.add(new_track);
+//        Log.d("ori_track_check", ori_track.toString());
+//        Log.d("new_track_check", new_track.toString());
 
 //        return  CombineToTwoTracks(combined_track, timesig.getMeasure());
     }

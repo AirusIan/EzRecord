@@ -118,10 +118,10 @@ public class EditorActivity extends  MidiHandlingActivity {
             btn_save.setOnClickListener((save)->{
                 save();
             });
-//            btn_addSheet = findViewById(R.id.ic_delete);
-//            btn_addSheet.setOnClickListener((add)->{
-//                addSheet();
-//            });
+            btn_addSheet = findViewById(R.id.ic_delete);
+            btn_addSheet.setOnClickListener((add)->{
+                addSheet();
+            });
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -417,20 +417,19 @@ public class EditorActivity extends  MidiHandlingActivity {
 //
 //    }
 
-//    /** 加入樂譜 */
-//    private void addSheet(){
-////        可用功能Clone、CombineToTwoTracks
-//        Uri addUri = uri.parse("file:///android_asset/Bach__Minuet_in_G_major.mid");
-//        String addTitle = "Bach__Minuet_in_G_major";
-//        FileUri addFile = new FileUri(addUri, addTitle);
-//        byte[] addData;
-//        addData = addFile.getData(this);
-//        MidiFile addMidiFile = new MidiFile(addData, addTitle);
-////        ArrayList<MidiTrack> testTrack = midifile.AddSheet(midifile.getTracks(), addMidiFile.getTracks());
-//        midifile.AddSheet(midifile.getTracks(), addMidiFile.getTracks());
-//
-//        createViews();
-//    }
+    /** 加入樂譜 */
+    private void addSheet(){
+//        可用功能Clone、CombineToTwoTracks
+        Uri addUri = uri.parse("file:///android_asset/Bach__Minuet_in_G_major.mid");
+        String addTitle = "Bach__Minuet_in_G_major";
+        FileUri addFile = new FileUri(addUri, addTitle);
+        byte[] addData = addFile.getData(this);;
+        MidiFile addMidiFile = new MidiFile(addData, addTitle);
+//        ArrayList<MidiTrack> testTrack = midifile.AddSheet(midifile.getTracks(), addMidiFile.getTracks());
+        midifile.AddSheet(midifile, addMidiFile.getTracks());
+
+        createViews();
+    }
 
 
     @Override
