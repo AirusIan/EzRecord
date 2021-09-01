@@ -167,6 +167,13 @@ public class EditorActivity extends  MidiHandlingActivity {
     public void onbackClick(View view) {
         super.onBackPressed();
     }
+    public void ondeleteClick(View view) {
+        int NotePulseTime = player.NotePulseTime();
+        System.out.println(NotePulseTime);
+        midifile.DeleteNote(NotePulseTime);
+        createViews();
+
+    }
     public void noteClick(View view) {
     ic_music_note.setVisibility(View.GONE);
     ic_menu_save.setVisibility(View.GONE);

@@ -117,6 +117,7 @@ public class MidiPlayer extends LinearLayout {
     double prevPulseTime;
     /** The parent activity. */
     Activity activity;
+    public int notePulseTime = 0;
 
     /** A listener that allows us to send a request to update the sheet when needed */
     private SheetUpdateRequestListener mSheetUpdateRequestListener;
@@ -163,7 +164,7 @@ public class MidiPlayer extends LinearLayout {
 
     int prevWrongMidi = 0;
 
-    void OnMidiNote(int note, boolean pressed) {
+    public void OnMidiNote(int note, boolean pressed) {
         if (!pressed) return;
         MusicSymbol nextNote = this.sheet.getCurrentNote((int) currentPulseTime);
         int midiNote = ((ChordSymbol) nextNote).getNotedata()[0].number;
@@ -722,6 +723,7 @@ public class MidiPlayer extends LinearLayout {
         }
 
         currentPulseTime = sheet.PulseTimeForPoint(new Point(x, y));
+        notePulseTime = (int)currentPulseTime;
         prevPulseTime = currentPulseTime - midifile.getTime().getMeasure();
         if (currentPulseTime > midifile.getTotalPulses()) {
             currentPulseTime -= midifile.getTime().getMeasure();
@@ -731,7 +733,9 @@ public class MidiPlayer extends LinearLayout {
             piano.ShadeNotes((int) currentPulseTime, (int) prevPulseTime);
         }
     }
-
+    public int NotePulseTime(){
+        return notePulseTime;
+    }
 
     /** The callback for the timer. If the midi is still playing, 
      *  update the currentPulseTime and shade the sheet music.

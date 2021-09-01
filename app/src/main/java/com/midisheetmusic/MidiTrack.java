@@ -99,6 +99,10 @@ public class MidiTrack {
         notes.add(m);
     }
 
+    public void Delete(int m) {
+        notes.remove(m);
+    }
+
     /** A NoteOff event occured.  Find the MidiNote of the corresponding
      * NoteOn event, and update the duration of the MidiNote.
      */
