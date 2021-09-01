@@ -454,6 +454,9 @@ public class MidiFile {
         }
     }
 
+    public void setMidiEvent(ArrayList<ArrayList<MidiEvent>> newEvent){
+        allevents = newEvent;
+    }
 
     /** Create a new MidiFile from the byte[] */
     public MidiFile(byte[] rawdata, String filename) {
@@ -1268,6 +1271,7 @@ public class MidiFile {
      * (and other notes) to one measure. We care only about high/low notes that are
      * reasonably close to this note.
      */
+
     private static void
     FindHighLowNotes(ArrayList<MidiNote> notes, int measurelen, int startindex, 
                      int starttime, int endtime, PairInt pair) {
