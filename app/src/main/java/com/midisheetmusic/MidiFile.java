@@ -435,25 +435,36 @@ public class MidiFile {
     /** Get the total length (in pulses) of the song */
     public int getTotalPulses() { return totalpulses; }
 
-    public void DeleteNote(int NotePulseTime){
-        for (MidiTrack t : tracks) {
-            ArrayList<MidiNote> midiNotes = t.getNotes();
-            for(int i=0;i<midiNotes.size();i++){
-                if(midiNotes.get(i).getStartTime() == NotePulseTime){
-                    for(int j=0;j<midiNotes.size();j++){
-                        System.out.print(midiNotes.get(j).getStartTime()+" ");
-                    }
-                    System.out.println("");
-                    t.Delete(i);
-                    for(int j=0;j<midiNotes.size();j++){
-                        System.out.print(midiNotes.get(j).getStartTime()+" ");
+    public void DeleteNote(int NotePulseTime,int trackNum){
+        if(trackNum != 3) {
+            for (int i = 0; i < tracks.get(trackNum).getNotes().size(); i++) {
+                if (tracks.get(trackNum).getNotes().get(i).getStartTime() == NotePulseTime) {
+
+                    tracks.get(trackNum).Delete(i);
+
+                }
+            }
+        }
+        if(trackNum == 3){
+            for (MidiTrack t : tracks) {
+                ArrayList<MidiNote> midiNotes = t.getNotes();
+                for(int g=0;g<midiNotes.size();g++){
+                    if(midiNotes.get(g).getStartTime() == NotePulseTime){
+
+                        t.Delete(g);
+
                     }
                 }
+
             }
 
         }
+
     }
 
+    public void setMidiEvent(ArrayList<ArrayList<MidiEvent>> newEvent){
+        allevents = newEvent;
+    }
 
     /** Create a new MidiFile from the byte[] */
     public MidiFile(byte[] rawdata, String filename) {
@@ -1223,6 +1234,42 @@ public class MidiFile {
         }
     }
 
+    /** 加入樂譜 Add another midi file notes to the end of current music sheet */
+    /* 讀取兩個midi檔案的音軌後，分別將新檔案的音軌合併至舊檔案 目前還缺乏加入的功能*/
+//    A. 試圖用miditrack去儲存 ( 改寫建構程式 )
+//    B. 把track轉成byte去合併
+//    C. 把檔案ShiftTime->Write 之後合併看看，估計是不行
+//    D. addNote by functin、byte[]
+    public void
+    AddSheet(MidiFile midiFile, ArrayList<MidiTrack> new_tracks)
+    {
+        ArrayList<MidiNote> noteArrayList = new ArrayList<MidiNote>();
+        int i = 0;
+//        midiFile.getTracks().get(0).AddNote(new MidiNote(midiFile.EndTime()+120, 1, 60, 120));
+//        ShiftTime(new_tracks, midiFile.EndTime()+120);
+        for (MidiTrack track : new_tracks){
+            for (MidiNote note : track.getNotes()){
+                MidiNote new_note = note;
+                new_note.setStartTime(midiFile.EndTime()+120);
+                noteArrayList.add(new_note);
+                Log.d("NoteMessage", new_note.toString());
+                midiFile.getTracks().get(0).AddNote(noteArrayList.get(i));
+                i++;
+            }
+        }
+
+
+//        MidiTrack ori_track = CombineToSingleTrack(origin_tracks);
+//        MidiTrack new_track = CombineToSingleTrack(new_tracks);
+//        ArrayList<MidiTrack> combined_track = new ArrayList();
+//        combined_track.add(ori_track);
+//        combined_track.add(new_track);
+//        Log.d("ori_track_check", ori_track.toString());
+//        Log.d("new_track_check", new_track.toString());
+
+//        return  CombineToTwoTracks(combined_track, timesig.getMeasure());
+    }
+
    
     /* Find the highest and lowest notes that overlap this interval (starttime to endtime).
      * This method is used by SplitTrack to determine which staff (top or bottom) a note
@@ -1232,6 +1279,7 @@ public class MidiFile {
      * (and other notes) to one measure. We care only about high/low notes that are
      * reasonably close to this note.
      */
+
     private static void
     FindHighLowNotes(ArrayList<MidiNote> notes, int measurelen, int startindex, 
                      int starttime, int endtime, PairInt pair) {
@@ -1504,6 +1552,7 @@ public class MidiFile {
             int prevtime = -1;
             for (MidiNote note : track.getNotes()) {
                 if (note.getStartTime() < prevtime) {
+                    Log.d("StartTime", "錯誤音符開始時間為:" + String.valueOf(note.getStartTime()));
                     throw new MidiFileException("Internal parsing error", 0);
                 }
                 prevtime = note.getStartTime();

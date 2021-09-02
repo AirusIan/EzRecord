@@ -82,6 +82,9 @@ public class RestSymbol implements MusicSymbol {
         else if (duration == NoteDuration.Eighth) {
             DrawEighth(canvas, paint, ytop);
         }
+        else if (duration == NoteDuration.Sixteenth) {
+            DrawSixteenth(canvas, paint, ytop);
+        }
         canvas.translate(-SheetMusic.NoteHeight/2, 0);
         canvas.translate(-(getWidth() - getMinWidth()), 0);
     }
@@ -146,17 +149,47 @@ public class RestSymbol implements MusicSymbol {
      * @param ytop The ylocation (in pixels) where the top of the staff starts.
      */
     public void DrawEighth(Canvas canvas, Paint paint, int ytop) {
-        int y = ytop + SheetMusic.NoteHeight - 1;
+        int y = ytop + SheetMusic.NoteHeight - 1; //NoteHeight = LineSpace + LineWidth
         RectF rect = new RectF(0, y+1, 
                                SheetMusic.LineSpace-1, y+1 + SheetMusic.LineSpace-1);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawOval(rect, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(1);
-        canvas.drawLine((SheetMusic.LineSpace-2)/2, y + SheetMusic.LineSpace-1, 
-                        3*SheetMusic.LineSpace/2, y + SheetMusic.LineSpace/2, paint);
-        canvas.drawLine(3*SheetMusic.LineSpace/2, y + SheetMusic.LineSpace/2, 
-                        3*SheetMusic.LineSpace/4, y + SheetMusic.NoteHeight*2, paint);
+
+        canvas.drawLine((SheetMusic.LineSpace-2)/2, y + SheetMusic.LineSpace-1,
+                3*SheetMusic.LineSpace/2, y + SheetMusic.LineSpace/2, paint);
+        canvas.drawLine(3*SheetMusic.LineSpace/2, y + SheetMusic.LineSpace/2,
+                3*SheetMusic.LineSpace/4, y + SheetMusic.NoteHeight*2, paint);
+
+    }
+
+    public void DrawSixteenth(Canvas canvas, Paint paint, int ytop) {
+        int y = ytop ; //NoteHeight = LineSpace + LineWidth
+        //第一個點的大小
+        RectF rect1 = new RectF(0, y,
+                SheetMusic.LineSpace-1, y + SheetMusic.LineSpace-1);
+        paint.setStyle(Paint.Style.FILL);
+        //第一個點
+        canvas.drawOval(rect1, paint);
+        //第二個點的大小
+        RectF rect2 = new RectF(-2, ytop + SheetMusic.NoteHeight ,
+                SheetMusic.LineSpace-3, y+1 + 2*SheetMusic.LineSpace-1);
+        paint.setStyle(Paint.Style.FILL);
+        //第二個點
+        canvas.drawOval(rect2, paint);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(1);
+
+        //上面的斜線
+        canvas.drawLine((SheetMusic.LineSpace-2)/2, y + SheetMusic.LineSpace-1,
+                3*SheetMusic.LineSpace/2, y + SheetMusic.LineSpace/2, paint);
+        //下面的斜線
+        canvas.drawLine(((SheetMusic.LineSpace-2)/2)-2, y+1 + 2*SheetMusic.LineSpace-1,
+                (3*SheetMusic.LineSpace/2)-2, y + 3*SheetMusic.LineSpace/2, paint);
+        //旁邊的斜線
+        canvas.drawLine(3*SheetMusic.LineSpace/2, y-1 + SheetMusic.LineSpace/2,
+                3*SheetMusic.LineSpace/4 -2, y + SheetMusic.NoteHeight*3-1, paint);
     }
 
     public String toString() {

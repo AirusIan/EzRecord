@@ -422,6 +422,7 @@ public class SheetMusic extends SurfaceView implements SurfaceHolder.Callback, S
             case Half:
             case Quarter:
             case Eighth:
+            case Sixteenth:
                 r1 = new RestSymbol(start, dur);
                 result = new RestSymbol[]{ r1 };
                 return result;
@@ -444,6 +445,13 @@ public class SheetMusic extends SurfaceView implements SurfaceHolder.Callback, S
                 r1 = new RestSymbol(start, NoteDuration.Eighth);
                 r2 = new RestSymbol(start + time.getQuarter()/2, 
                                     NoteDuration.Sixteenth);
+                result = new RestSymbol[]{ r1, r2 };
+                return result;
+
+            case DottedSixteenth:
+                r1 = new RestSymbol(start, NoteDuration.Sixteenth);
+                r2 = new RestSymbol(start + time.getQuarter()/4,
+                        NoteDuration.ThirtySecond);
                 result = new RestSymbol[]{ r1, r2 };
                 return result;
 

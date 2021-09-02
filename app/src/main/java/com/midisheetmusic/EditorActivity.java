@@ -17,12 +17,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.zip.CRC32;
 
 public class EditorActivity extends  MidiHandlingActivity {
@@ -42,11 +47,13 @@ public class EditorActivity extends  MidiHandlingActivity {
     private Button btn_tips;
     private Button btn_save;
     private String str_saveName;
+    private Button btn_addSheet;
 
     //音符相關Button
     private Button ic_rewind,ic_transpose,ic_delete,ic_done,ic_menu_save,ic_music_note; //ic_rewind是backButton
     private Button eightnote,dotquarternote,downnote,halfnote,quarternote,quarterrest,sixteennote,upnote,wholenote;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate(Bundle state) {
         try {
             //獲取寫入權限
@@ -80,6 +87,10 @@ public class EditorActivity extends  MidiHandlingActivity {
             crc.update(data);
             midiCRC = crc.getValue();
 
+            createViews();
+
+
+            /** id宣告 */
             ic_rewind = findViewById( R.id.ic_rewind);
             ic_transpose = findViewById(R.id.ic_transpose);
             ic_delete = findViewById( R.id.ic_delete);
@@ -98,20 +109,20 @@ public class EditorActivity extends  MidiHandlingActivity {
             wholenote = findViewById( R.id.wholenote);
 
 
-            createViews();
-
-
-            //***********
+            /**  Button功能 */
+            tips();
+            btn_save = findViewById(R.id.ic_menu_save);
+            btn_save.setOnClickListener((save)->{
+                save();
+            });
+            btn_addSheet = findViewById(R.id.ic_add);
+            btn_addSheet.setOnClickListener((add)->{
+                addSheet();
+            });
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-
-        tips();
-        btn_save = findViewById(R.id.ic_menu_save);
-        btn_save.setOnClickListener((save)->{
-            save();
-        });
 
     }
     public void createViews() {
@@ -161,13 +172,45 @@ public class EditorActivity extends  MidiHandlingActivity {
         createViews();
     }
 
+
+
     public void ondeleteClick(View view) {
         int NotePulseTime = player.NotePulseTime();
-        System.out.println(NotePulseTime);
-        midifile.DeleteNote(NotePulseTime);
-        createViews();
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
+        builder.setCancelable(false);
+        builder.setMessage("選擇要刪除的音軌");
+        //alterdialog最多可以放三個按鈕，且位置是固定的，分別是
+        //setPositiveButton()右邊按鈕
+        //setNegativeButton()中間按鈕
+        //setNeutralButton()左邊按鈕
+        builder.setNeutralButton("ALL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                midifile.DeleteNote(NotePulseTime,3);
+                dialogInterface.dismiss();
+                createViews();
+            }
+        });
+        builder.setNegativeButton("Track 1", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                midifile.DeleteNote(NotePulseTime,0);
+                dialogInterface.dismiss();
+                createViews();
+            }
+        });
+        builder.setPositiveButton("Track 2", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                midifile.DeleteNote(NotePulseTime,1);
+                dialogInterface.dismiss();
+                createViews();
+            }
+        });
+        builder.create().show();
     }
+
+
     public void noteClick(View view) {
     ic_music_note.setVisibility(View.GONE);
     ic_menu_save.setVisibility(View.GONE);
@@ -185,6 +228,8 @@ public class EditorActivity extends  MidiHandlingActivity {
     upnote.setVisibility(View.VISIBLE);
     wholenote.setVisibility(View.VISIBLE);
     }
+
+
     public void doneClick(View view) {
         ic_music_note.setVisibility(View.VISIBLE);
         ic_menu_save.setVisibility(View.VISIBLE);
@@ -203,7 +248,8 @@ public class EditorActivity extends  MidiHandlingActivity {
         wholenote.setVisibility(View.GONE);
     }
 
-    //新增功能，前往tips頁面
+
+    /** 前往tips頁面 */
     private void tips() {
         btn_tips = findViewById(R.id.btn_go_tips);
         btn_tips.setOnClickListener((tips)->{
@@ -213,7 +259,8 @@ public class EditorActivity extends  MidiHandlingActivity {
         });
     }
 
-    //存檔
+    /** 儲存功能 延續createFile
+     * 只是這裡負責畫面顯示，輸入檔名的部分*/
     private void save() {
         if (isExternalStorageWritable() && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             View v = getLayoutInflater().inflate(R.layout.save_midi_dialog, null);
@@ -256,7 +303,7 @@ public class EditorActivity extends  MidiHandlingActivity {
         }
     }
 
-    //權限確認
+    /** 權限確認 */
     private boolean isExternalStorageWritable() {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Log.i("State", "Yes, it is writable!");
@@ -283,12 +330,12 @@ public class EditorActivity extends  MidiHandlingActivity {
         }
     }
 
-    //建立檔案
+    /** 儲存、建立新檔 */
     private void createFile() {
         str_saveName = str_saveName + ".mid";
-        String str = "content";
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath();
         String midiFilePath = filePath + "/midiSaveFile/" + str_saveName;
+
         File saved_file = new File(midiFilePath);
         if (!saved_file.getParentFile().exists()) {
             saved_file.getParentFile().mkdirs();
@@ -298,36 +345,29 @@ public class EditorActivity extends  MidiHandlingActivity {
                 saved_file.createNewFile();
             }
 
-            FileUri fileUri = new FileUri(uri, title);
             FileOutputStream output = new FileOutputStream(saved_file);
-            byte[] bytes = fileUri.getData(this);
-            MidiFile midiFile = new MidiFile(fileUri.getData(this), fileUri.toString());
-            output.write(bytes);
+            midifile.Write(output, null);
             output.close();
-
-//            reviseFile(midiFilePath);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    //白寫了 :<
-//    private void reviseFile(String midiFilePath){
-//        Uri re_uri = Uri.parse(midiFilePath);
-//        FileUri fileUri = new FileUri(re_uri, re_uri.getLastPathSegment());
-//        MidiFile re_midifile = new MidiFile(fileUri.getData(this), re_uri.getLastPathSegment());
-//        try {
-//            FileOutputStream output = openFileOutput(title, Context.MODE_PRIVATE);
-//            re_midifile.Write(output, options);
-//            output.close();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+
+
+    /** 加入樂譜 */
+    private void addSheet(){
+        Uri addUri = TipsSheetActivity.addUri;
+        String addTitle = TipsSheetActivity.addTitle;
+        Log.d("", "Uri:" + addUri.getPath() + "/n  Title:" + addTitle);
+        FileUri addFile = new FileUri(addUri, addTitle);
+        byte[] addData = addFile.getData(this);
+        MidiFile addMidiFile = new MidiFile(addData, addTitle);
+        midifile.AddSheet(midifile, addMidiFile.getTracks());
+
+        createViews();
+    }
+
 
     @Override
     void OnMidiDeviceStatus(boolean connected) {
