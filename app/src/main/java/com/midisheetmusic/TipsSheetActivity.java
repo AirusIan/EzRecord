@@ -71,6 +71,8 @@ public class TipsSheetActivity extends MidiHandlingActivity{
         if (title == null) {
             title = uri.getLastPathSegment();
         }
+        addUri = uri;
+        addTitle = title;
         FileUri file = new FileUri(uri, title);
         this.setTitle("MidiSheetMusic: " + title);
 
@@ -91,10 +93,6 @@ public class TipsSheetActivity extends MidiHandlingActivity{
         crc.update(data);
         midiCRC = crc.getValue();
         SharedPreferences settings = getPreferences(0);
-//        options.scrollVert = settings.getBoolean("scrollVert", false);
-//        options.shade1Color = settings.getInt("shade1Color", options.shade1Color);
-//        options.shade2Color = settings.getInt("shade2Color", options.shade2Color);
-//        options.showPiano = settings.getBoolean("showPiano", true);
         String json = settings.getString("" + midiCRC, null);
         MidiOptions savedOptions = MidiOptions.fromJson(json);
         if (savedOptions != null) {
@@ -105,8 +103,9 @@ public class TipsSheetActivity extends MidiHandlingActivity{
         btn_go_back = findViewById(R.id.btn_go_back3);
         btn_go_back.setOnClickListener((back)->{
             onBackPressed();
-
         });
+
+
         createViews();
     }
     public void onBackPressed() {

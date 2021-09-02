@@ -252,7 +252,11 @@ public class MidiPlayer extends LinearLayout {
                 Button playTipButton = findViewById(R.id.btn_play_tip);
                 Button btn_addSheet = findViewById(R.id.btn_add);
                 playTipButton.setOnClickListener(v -> Play());
-                btn_addSheet.setOnClickListener(a -> checkFile(midifile.getFileName()));
+                btn_addSheet.setOnClickListener(a -> {
+                    TipsSheetActivity.addTitle = midifile.getFileName();
+                    
+                });
+
                 break;
 
             case Edit:

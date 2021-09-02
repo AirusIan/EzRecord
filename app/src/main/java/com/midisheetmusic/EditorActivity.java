@@ -114,16 +114,18 @@ public class EditorActivity extends  MidiHandlingActivity {
             btn_save.setOnClickListener((save)->{
                 save();
             });
-//            btn_addSheet = findViewById(R.id.ic_delete);
-//            btn_addSheet.setOnClickListener((add)->{
-//                addSheet();
-//            });
+            btn_addSheet = findViewById(R.id.ic_add);
+            btn_addSheet.setOnClickListener((add)->{
+                addSheet();
+            });
         }
         catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
+
     public void createViews() {
         layout = findViewById(R.id.editor_content);
 
@@ -163,6 +165,8 @@ public class EditorActivity extends  MidiHandlingActivity {
     public void onbackClick(View view) {
         super.onBackPressed();
     }
+
+
     public void ondeleteClick(View view) {
         int NotePulseTime = player.NotePulseTime();
         AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
@@ -197,9 +201,8 @@ public class EditorActivity extends  MidiHandlingActivity {
             }
         });
         builder.create().show();
-
-
     }
+
 
     public void noteClick(View view) {
     ic_music_note.setVisibility(View.GONE);
@@ -218,6 +221,8 @@ public class EditorActivity extends  MidiHandlingActivity {
     upnote.setVisibility(View.VISIBLE);
     wholenote.setVisibility(View.VISIBLE);
     }
+
+
     public void doneClick(View view) {
         ic_music_note.setVisibility(View.VISIBLE);
         ic_menu_save.setVisibility(View.VISIBLE);
@@ -345,10 +350,11 @@ public class EditorActivity extends  MidiHandlingActivity {
 
     /** 加入樂譜 */
     private void addSheet(){
-        Uri addUri = uri.parse("file:///android_asset/Bach__Minuet_in_G_major.mid");
-        String addTitle = "Bach__Minuet_in_G_major";
+        Uri addUri = TipsSheetActivity.addUri;
+        String addTitle = TipsSheetActivity.addTitle;
+        Log.d("", "Uri:" + addUri.getPath() + "/n  Title:" + addTitle);
         FileUri addFile = new FileUri(addUri, addTitle);
-        byte[] addData = addFile.getData(this);;
+        byte[] addData = addFile.getData(this);
         MidiFile addMidiFile = new MidiFile(addData, addTitle);
         midifile.AddSheet(midifile, addMidiFile.getTracks());
 
