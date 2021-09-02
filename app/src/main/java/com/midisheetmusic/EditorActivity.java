@@ -44,7 +44,7 @@ public class EditorActivity extends  MidiHandlingActivity {
     private String str_saveName;
 
     //音符相關Button
-    private Button ic_rewind,ic_delete,ic_done,ic_menu_save,ic_music_note; //ic_rewind是backButton
+    private Button ic_rewind,ic_transpose,ic_delete,ic_done,ic_menu_save,ic_music_note; //ic_rewind是backButton
     private Button eightnote,dotquarternote,downnote,halfnote,quarternote,quarterrest,sixteennote,upnote,wholenote;
 
     public void onCreate(Bundle state) {
@@ -81,6 +81,7 @@ public class EditorActivity extends  MidiHandlingActivity {
             midiCRC = crc.getValue();
 
             ic_rewind = findViewById( R.id.ic_rewind);
+            ic_transpose = findViewById(R.id.ic_transpose);
             ic_delete = findViewById( R.id.ic_delete);
             ic_done = findViewById( R.id.ic_done);
             ic_menu_save = findViewById( R.id.ic_menu_save);
@@ -152,6 +153,14 @@ public class EditorActivity extends  MidiHandlingActivity {
     public void onbackClick(View view) {
         super.onBackPressed();
     }
+
+    public void onTransposeClick(View view){
+        int NotePulseTime = player.NotePulseTime();
+        System.out.println(NotePulseTime);
+
+        createViews();
+    }
+
     public void ondeleteClick(View view) {
         int NotePulseTime = player.NotePulseTime();
         System.out.println(NotePulseTime);
