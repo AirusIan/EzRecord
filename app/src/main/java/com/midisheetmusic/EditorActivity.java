@@ -80,12 +80,6 @@ public class EditorActivity extends  MidiHandlingActivity {
             byte[] data;
             
             data = file.getData(this);
-            //測試用
-            String value = new String(data, "UTF-8");
-            Log.d("ByteData", Base64.getEncoder().encodeToString(data));
-            Log.d("ByteData", value);
-            
-
             midifile = new MidiFile(data, title);
 
             options = new MidiOptions(midifile);
@@ -95,8 +89,8 @@ public class EditorActivity extends  MidiHandlingActivity {
 
             createViews();
 
-            //***********
-            // id宣告
+
+            /** id宣告 */
             ic_rewind = findViewById( R.id.ic_rewind);
             ic_delete = findViewById( R.id.ic_delete);
             ic_done = findViewById( R.id.ic_done);
@@ -113,6 +107,8 @@ public class EditorActivity extends  MidiHandlingActivity {
             upnote = findViewById( R.id.upnote);
             wholenote = findViewById( R.id.wholenote);
 
+
+            /**  Button功能 */
             tips();
             btn_save = findViewById(R.id.ic_menu_save);
             btn_save.setOnClickListener((save)->{
@@ -207,6 +203,7 @@ public class EditorActivity extends  MidiHandlingActivity {
         upnote.setVisibility(View.GONE);
         wholenote.setVisibility(View.GONE);
     }
+
 
     /** 前往tips頁面 */
     private void tips() {
@@ -305,12 +302,8 @@ public class EditorActivity extends  MidiHandlingActivity {
             }
 
             FileOutputStream output = new FileOutputStream(saved_file);
-//            addSheet();
-
             midifile.Write(output, null);
             output.close();
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
