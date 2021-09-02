@@ -31,7 +31,8 @@ android {
 //            C:\\Users\\pody\\anaconda3\\python.exe 秉宏
 //            D:\Anaconda3\envs\Android_FinalProject\python.exe 建名的路徑
 //            C:\\Users\\Antonio\\AppData\\Local\\Programs\\Python\\Python39\\python.exe 翔安的路徑
-            buildPython "C:\\Users\\User\\anaconda3\\envs\\myenv\\python.exe"
+//            "C:\\Users\\HP-NB\\Anaconda3\\python.exe" 旭智的路徑 QQ
+            buildPython "C:\\Users\\HP-NB\\Anaconda3\\python.exe"
 
             // 安装python库
             pip {

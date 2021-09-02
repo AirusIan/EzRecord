@@ -435,23 +435,31 @@ public class MidiFile {
     /** Get the total length (in pulses) of the song */
     public int getTotalPulses() { return totalpulses; }
 
-    public void DeleteNote(int NotePulseTime){
-        for (MidiTrack t : tracks) {
-            ArrayList<MidiNote> midiNotes = t.getNotes();
-            for(int i=0;i<midiNotes.size();i++){
-                if(midiNotes.get(i).getStartTime() == NotePulseTime){
-                    for(int j=0;j<midiNotes.size();j++){
-                        System.out.print(midiNotes.get(j).getStartTime()+" ");
-                    }
-                    System.out.println("");
-                    t.Delete(i);
-                    for(int j=0;j<midiNotes.size();j++){
-                        System.out.print(midiNotes.get(j).getStartTime()+" ");
+    public void DeleteNote(int NotePulseTime,int trackNum){
+        if(trackNum != 3) {
+            for (int i = 0; i < tracks.get(trackNum).getNotes().size(); i++) {
+                if (tracks.get(trackNum).getNotes().get(i).getStartTime() == NotePulseTime) {
+
+                    tracks.get(trackNum).Delete(i);
+
+                }
+            }
+        }
+        if(trackNum == 3){
+            for (MidiTrack t : tracks) {
+                ArrayList<MidiNote> midiNotes = t.getNotes();
+                for(int g=0;g<midiNotes.size();g++){
+                    if(midiNotes.get(g).getStartTime() == NotePulseTime){
+
+                        t.Delete(g);
+
                     }
                 }
+
             }
 
         }
+
     }
 
     public void setMidiEvent(ArrayList<ArrayList<MidiEvent>> newEvent){
