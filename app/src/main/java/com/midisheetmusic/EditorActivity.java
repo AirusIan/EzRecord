@@ -176,6 +176,14 @@ public class EditorActivity extends  MidiHandlingActivity {
         //setPositiveButton()右邊按鈕
         //setNegativeButton()中間按鈕
         //setNeutralButton()左邊按鈕
+        builder.setNeutralButton("ALL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                midifile.DeleteNote(NotePulseTime,3);
+                dialogInterface.dismiss();
+                createViews();
+            }
+        });
         builder.setNegativeButton("Track 1", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
