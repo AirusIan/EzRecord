@@ -41,6 +41,7 @@ public class EditorActivity extends  MidiHandlingActivity {
     private Uri uri;
     private String title;
     private long midiCRC;
+    private int transpose = 0;
 
     //靈感、存檔功能
     //讀取midiFile的方式, 先抓Uri跟title, 透過FileUri解析byte[], 轉為midi檔案讀入.
@@ -166,10 +167,47 @@ public class EditorActivity extends  MidiHandlingActivity {
     }
 
     public void onTransposeClick(View view){
-        int NotePulseTime = player.NotePulseTime();
-        System.out.println(NotePulseTime);
+        int notePulseTime = player.NotePulseTime();
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
+        builder.setCancelable(false);
+        builder.setMessage("選擇要調整的音軌");
 
-        createViews();
+        builder.setNegativeButton("Track 1", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                createListDialog(0);
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setPositiveButton("Track 2", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                createListDialog(1);
+                dialogInterface.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void createListDialog(int track){
+        AlertDialog.Builder dialog_list = new AlertDialog.Builder(EditorActivity.this);
+        dialog_list.setItems(R.array.transpose_entries, new DialogInterface.OnClickListener(){
+            @Override
+
+            public void onClick(DialogInterface dialog, int value) {
+                if(value <= 12){
+                    transpose = 12 - value;
+                }else if(value > 12){
+                    transpose = (value - 12) * (-1);
+                }
+                if(player.prevPulseTime != -10) {
+                    midifile.transposeNote(player.NotePulseTime(), track, transpose);
+                }
+                dialog.dismiss();
+                createViews();
+            }
+        });
+        dialog_list.show();
     }
 
 

@@ -1234,6 +1234,19 @@ public class MidiFile {
         }
     }
 
+    public void transposeNote(int notePulseTime, int track, int transpose){
+        if(transpose != 0) {
+            for (MidiNote note : tracks.get(track).getNotes()) {
+                if (note.getStartTime() == notePulseTime) {
+                    note.setNumber(note.getNumber() + transpose);
+                    if (note.getNumber() < 0) {
+                        note.setNumber(0);
+                    }
+                }
+            }
+        }
+    }
+
     /** 加入樂譜 Add another midi file notes to the end of current music sheet */
     /* 讀取兩個midi檔案的音軌後，分別將新檔案的音軌合併至舊檔案 目前還缺乏加入的功能*/
 //    A. 試圖用miditrack去儲存 ( 改寫建構程式 )
