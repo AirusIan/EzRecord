@@ -24,6 +24,6 @@
         android:layout_height="25pt"
         android:backgroundTint="#FF0000"
         android:drawableStart="@android:drawable/ic_input_add"
-        android:text="加入樂譜" />
+        android:text="設定" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

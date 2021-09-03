@@ -397,13 +397,16 @@ public class EditorActivity extends  MidiHandlingActivity {
     private void addSheet(){
         Uri addUri = TipsSheetActivity.addUri;
         String addTitle = TipsSheetActivity.addTitle;
-        Log.d("", "Uri:" + addUri.getPath() + "/n  Title:" + addTitle);
-        FileUri addFile = new FileUri(addUri, addTitle);
-        byte[] addData = addFile.getData(this);
-        MidiFile addMidiFile = new MidiFile(addData, addTitle);
-        midifile.AddSheet(midifile, addMidiFile.getTracks());
-
-        createViews();
+        if (addUri != null && !addTitle.isEmpty()) {
+            Log.d("", "Uri:" + addUri.getPath() + "/n  Title:" + addTitle);
+            FileUri addFile = new FileUri(addUri, addTitle);
+            byte[] addData = addFile.getData(this);
+            MidiFile addMidiFile = new MidiFile(addData, addTitle);
+            midifile.AddSheet(midifile, addMidiFile.getTracks());
+            createViews();
+        }else{
+            Toast.makeText(this, "尚未設定", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
