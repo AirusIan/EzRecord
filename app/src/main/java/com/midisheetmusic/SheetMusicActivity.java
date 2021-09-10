@@ -340,7 +340,7 @@ public class SheetMusicActivity extends MidiHandlingActivity {
 
 //新增功能，前往editor頁面
     private void editor() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri, this, EditorActivity.class);
+        Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT, uri, this, EditorActivity.class);  // 9/2 VIEW -> EDIT 有問題再改回來
         intent.putExtra(EditorActivity.MidiTitleID, title);
         intent.setClass(this, EditorActivity.class);
         startActivity(intent);

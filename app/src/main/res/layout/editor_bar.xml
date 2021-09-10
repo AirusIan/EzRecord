@@ -91,6 +91,22 @@
             android:text="返回" />
 
         <Button
+            android:id="@+id/ic_add"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:drawableStart="@android:drawable/ic_input_add"
+            android:text="加入" />
+
+        <Button
+            android:id="@+id/ic_transpose"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_transpose"
+            android:onClick="onTransposeClick"
+            android:text="音高" />
+        <Button
             android:id="@+id/ic_delete"
             android:layout_width="20dp"
             android:layout_height="40dp"

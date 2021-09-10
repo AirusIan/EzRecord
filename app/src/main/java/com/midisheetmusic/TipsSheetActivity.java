@@ -21,6 +21,9 @@ public class TipsSheetActivity extends MidiHandlingActivity{
     private Button btn_go_back;
     private TextView textView;
 
+    public static Uri addUri;
+    public static String addTitle;
+
 /*  1-1. 相同音檔 測試有沒有辦法直接讀取音軌的全部聲音然後加入至樂譜後面
     1-2. 相同音檔做檔案合併測試
     補：這裡需要抓取原音軌最後endTime
@@ -68,6 +71,8 @@ public class TipsSheetActivity extends MidiHandlingActivity{
         if (title == null) {
             title = uri.getLastPathSegment();
         }
+        addUri = uri;
+        addTitle = title;
         FileUri file = new FileUri(uri, title);
         this.setTitle("MidiSheetMusic: " + title);
 
@@ -88,10 +93,6 @@ public class TipsSheetActivity extends MidiHandlingActivity{
         crc.update(data);
         midiCRC = crc.getValue();
         SharedPreferences settings = getPreferences(0);
-//        options.scrollVert = settings.getBoolean("scrollVert", false);
-//        options.shade1Color = settings.getInt("shade1Color", options.shade1Color);
-//        options.shade2Color = settings.getInt("shade2Color", options.shade2Color);
-//        options.showPiano = settings.getBoolean("showPiano", true);
         String json = settings.getString("" + midiCRC, null);
         MidiOptions savedOptions = MidiOptions.fromJson(json);
         if (savedOptions != null) {
@@ -102,8 +103,9 @@ public class TipsSheetActivity extends MidiHandlingActivity{
         btn_go_back = findViewById(R.id.btn_go_back3);
         btn_go_back.setOnClickListener((back)->{
             onBackPressed();
-
         });
+
+
         createViews();
     }
     public void onBackPressed() {
