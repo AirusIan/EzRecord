@@ -416,7 +416,7 @@ public class MidiPlayer extends LinearLayout {
 
         try {
             FileOutputStream dest = activity.openFileOutput(tempSoundFile, Context.MODE_PRIVATE);
-            midifile.ChangeSound(dest, options);
+            midifile.Save_function(dest, options);
             dest.close();
             // checkFile(tempSoundFile);
         }

@@ -200,9 +200,12 @@ public class MidiFile {
     private ArrayList<MidiTrack> tracks ;  /** The tracks of the midifile that have notes */
     private short trackmode;         /** 0 (single track), 1 (simultaneous tracks) 2 (independent tracks) */
     private TimeSignature timesig;    /** The time signature */
-    private int quarternote;          /** The number of pulses per quarter note */
+    private int quarternote;          /** The number of pulses per quarter note  一個四分音符幾拍*/
     private int totalpulses;          /** The total length of the song, in pulses */
     private boolean trackPerChannel;  /** True if we've split each channel into a track */
+
+    private static ArrayList<Integer> tracklens;
+
     /* The list of Midi Events */
     public static final byte EventNoteOff         = (byte)0x80;
     public static final byte EventNoteOn          = (byte)0x90;
@@ -368,7 +371,7 @@ public class MidiFile {
     /* End Instruments */
 
     /** Return a String representation of a Midi event */
-    private String EventName(int ev) {
+    public static String EventName(int ev) {
         if (ev >= EventNoteOff && ev < EventNoteOff + 16)
             return "NoteOff";
         else if (ev >= EventNoteOn && ev < EventNoteOn + 16) 
@@ -392,7 +395,7 @@ public class MidiFile {
     }
 
     /** Return a String representation of a meta-event */
-    private String MetaName(int ev) {
+    public static String MetaName(int ev) {
 
         if (ev == MetaEventSequence)
             return "MetaEventSequence";
@@ -478,6 +481,7 @@ public class MidiFile {
         int len;
 
         tracks = new ArrayList<MidiTrack>();
+        tracklens = new ArrayList<>();
         trackPerChannel = false;
 
         MidiFileReader file = new MidiFileReader(rawdata);
@@ -485,13 +489,13 @@ public class MidiFile {
         if (!id.equals("MThd")) {
             throw new MidiFileException("Doesn't start with MThd", 0);
         }
-        len = file.ReadInt(); 
+        len = file.ReadInt();
         if (len !=  6) {
             throw new MidiFileException("Bad MThd header", 4);
         }
         trackmode = (short) file.ReadShort();
         int num_tracks = file.ReadShort();
-        quarternote = file.ReadShort(); 
+        quarternote = file.ReadShort();
 
         allevents = new ArrayList<ArrayList<MidiEvent>>();
         for (int tracknum = 0; tracknum < num_tracks; tracknum++) {
@@ -564,6 +568,7 @@ public class MidiFile {
             throw new MidiFileException("Bad MTrk header", file.GetOffset() - 4);
         }
         int tracklen = file.ReadInt();
+        tracklens.add(tracklen);
         int trackend = tracklen + file.GetOffset();
 
         byte eventflag = 0;
@@ -596,9 +601,9 @@ public class MidiFile {
                 eventflag = file.ReadByte();
             }
 
-            //Log.e("debug",  "offset " + startoffset + 
-            //                " event " + eventflag + " " + EventName(eventflag) +
-            //                " start " + starttime + " delta " + mevent.DeltaTime);
+//            Log.e("debug",  "offset " + startoffset +
+//                            " event " + eventflag + " " + EventName(eventflag) +
+//                            " start " + starttime + " delta " + mevent.DeltaTime);
 
             if (eventflag >= EventNoteOn && eventflag < EventNoteOn + 16) {
                 mevent.EventFlag = EventNoteOn;
@@ -659,6 +664,7 @@ public class MidiFile {
                 mevent.Metaevent = file.ReadByte();
                 mevent.Metalength = file.ReadVarlen();
                 mevent.Value = file.ReadBytes(mevent.Metalength);
+//                Log.e("debug","Metaevent = "+ MetaName(mevent.Metaevent));
                 if (mevent.Metaevent == MetaEventTimeSignature) {
                     if (mevent.Metalength < 2) {
                         throw new MidiFileException(
@@ -796,7 +802,8 @@ public class MidiFile {
      *  Return true on success, and false on error.
      */
     private static void
-    WriteEvents(FileOutputStream file, ArrayList<ArrayList<MidiEvent>> allevents, 
+    WriteEvents(FileOutputStream file, ArrayList<
+            ArrayList<MidiEvent>> allevents,
                   int trackmode, int quarter) throws IOException {
 
         byte[] buf = new byte[16384];
@@ -805,7 +812,7 @@ public class MidiFile {
         file.write("MThd".getBytes(StandardCharsets.US_ASCII), 0, 4);
         IntToBytes(6, buf, 0);
         file.write(buf, 0, 4);
-        buf[0] = (byte)(trackmode >> 8); 
+        buf[0] = (byte)(trackmode >> 8);
         buf[1] = (byte)(trackmode & 0xFF);
         file.write(buf, 0, 2);
         buf[0] = 0; 
@@ -997,14 +1004,18 @@ public class MidiFile {
      * before performing the write.
      * Return true if the file was saved successfully, else false.
      */
-    public void ChangeSound(FileOutputStream destfile, MidiOptions options)
+    public void Save_function(FileOutputStream destfile, MidiOptions options)
       throws IOException {
-        Write(destfile, options);
+        ArrayList<ArrayList<MidiEvent>> newevents = new ArrayList<ArrayList<MidiEvent>>();
+        for(MidiTrack track : tracks){
+            newevents.add(track.Covert2Event());
+        }
+        allevents = newevents;
+        Write(destfile, newevents, options);
     }
 
-    public void Write(FileOutputStream destfile, MidiOptions options) 
+    public void Write(FileOutputStream destfile, ArrayList<ArrayList<MidiEvent>> newevents ,MidiOptions options)
       throws IOException {
-        ArrayList<ArrayList<MidiEvent>> newevents = allevents;
         if (options != null) {
             newevents = ApplyOptionsToEvents(options);
         }

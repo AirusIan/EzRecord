@@ -329,9 +329,7 @@ public class EditorActivity extends  MidiHandlingActivity {
             }
 
             FileOutputStream output = new FileOutputStream(saved_file);
-//            addSheet();
-
-            midifile.Write(output, null);
+            midifile.Save_function(output, player.options);
             output.close();
 
 

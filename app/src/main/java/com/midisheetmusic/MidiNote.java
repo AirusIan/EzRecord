@@ -14,6 +14,7 @@
 
 package com.midisheetmusic;
 
+import java.nio.channels.Channel;
 import java.util.*;
 
 
@@ -93,6 +94,28 @@ public class MidiNote implements Comparator<MidiNote> {
         String[] scale = new String[]{ "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
         return String.format("MidiNote channel=%1$s number=%2$s %3$s start=%4$s duration=%5$s",
                              channel, notenumber, scale[(notenumber + 3) % 12], starttime, duration);
+    }
+
+    public MidiEvent[] Note2Event(){
+
+        MidiEvent note_on = new MidiEvent();
+        note_on.EventFlag = MidiFile.EventNoteOn;
+        note_on.HasEventflag = true;
+        note_on.Velocity = 64;
+        note_on.StartTime = this.starttime;
+        note_on.Channel = (byte)this.channel;
+        note_on.Notenumber = (byte)this.notenumber;
+
+        MidiEvent note_off = new MidiEvent();
+        note_off.EventFlag = MidiFile.EventNoteOff;
+        note_off.HasEventflag = true;
+        note_off.DeltaTime = this.duration;
+        note_off.Velocity = 0;
+        note_off.StartTime = this.starttime + this.duration;
+        note_off.Channel = (byte)this.channel;
+        note_off.Notenumber = (byte)this.notenumber;
+
+        return new MidiEvent[]{note_on, note_off};
 
     }
 

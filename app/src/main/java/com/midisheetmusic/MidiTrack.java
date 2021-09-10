@@ -14,6 +14,8 @@
 
 package com.midisheetmusic;
 
+import android.util.Log;
+
 import java.util.*;
 
 
@@ -34,6 +36,8 @@ public class MidiTrack {
     private ArrayList<MidiNote> notes;    /** List of Midi notes */
     private int instrument;               /** Instrument for this track */
     private ArrayList<MidiEvent> lyrics;  /** The lyrics in this track */
+    private ArrayList<MidiEvent> new_events;/** Used in write **/
+    private MidiEvent end_of_track;
 
     /** Create an empty MidiTrack.  Used by the Clone method */
     public MidiTrack(int tracknum) {
@@ -46,8 +50,10 @@ public class MidiTrack {
      *  events to gather the list of MidiNotes.
      */
     public MidiTrack(ArrayList<MidiEvent> events, int tracknum) {
+        new_events = new ArrayList<MidiEvent>();
         this.tracknum = tracknum;
         notes = new ArrayList<MidiNote>(events.size());
+
         instrument = 0;
  
         for (MidiEvent mevent : events) {
@@ -62,19 +68,22 @@ public class MidiTrack {
                 NoteOff(mevent.Channel, mevent.Notenumber, mevent.StartTime);
             }
             else if (mevent.EventFlag == MidiFile.EventProgramChange) {
+                new_events.add(mevent.Clone());
                 instrument = mevent.Instrument;
             }
             else if (mevent.Metaevent == MidiFile.MetaEventLyric) {
+                new_events.add(mevent.Clone());
                 AddLyric(mevent);
-                if (lyrics == null) {
-                    lyrics = new ArrayList<MidiEvent>();
-                }
-                lyrics.add(mevent);
+            }else if(mevent.Metaevent == MidiFile.MetaEventEndOfTrack){
+                end_of_track = mevent.Clone();
+            }else if(mevent.EventFlag != MidiFile.EventControlChange){
+                new_events.add(mevent.Clone());
             }
         }
         if (notes.size() > 0 && notes.get(0).getChannel() == 9)  {
             instrument = 128;  /* Percussion */
         }
+        System.out.println("第一個音符Starttime: " + notes.get(0).getStartTime());
     }
 
     public int trackNumber() { return tracknum; }
@@ -148,6 +157,45 @@ public class MidiTrack {
         }
         result.append("End Track\n");
         return result.toString();
+    }
+
+    public ArrayList<MidiEvent> Covert2Event(){
+        ArrayList<MidiEvent> note_events = new ArrayList<>();
+
+        for(int i=0;i<notes.size();i++){
+            MidiEvent note_on = notes.get(i).Note2Event()[0];
+            MidiEvent note_off = notes.get(i).Note2Event()[1];
+            note_events.add(note_on);
+            note_events.add(note_off);
+        }
+
+        Collections.sort(note_events, (x, y) -> {
+            if (x.StartTime == y.StartTime) {
+                if (x.EventFlag == y.EventFlag) {
+                    return x.Notenumber - y.Notenumber;
+                }
+                else {
+                    return x.EventFlag - y.EventFlag;
+                }
+            }
+            else {
+                return x.StartTime - y.StartTime;
+            }
+        });
+
+        new_events.addAll(note_events);
+
+        for(int i=0;i<new_events.size();i++){
+            if(new_events.get(i).EventFlag == MidiFile.EventNoteOn){
+                new_events.get(i).DeltaTime = new_events.get(i).StartTime -
+                        new_events.get(i-1).StartTime;
+            }
+        }
+
+        end_of_track.StartTime = new_events.get(new_events.size()-1).StartTime;
+        new_events.add(end_of_track.Clone());
+
+        return new_events;
     }
 }
 
