@@ -607,9 +607,9 @@ public class MidiFile {
                 eventflag = file.ReadByte();
             }
 
-//            Log.e("debug",  "offset " + startoffset +
-//                            " event " + eventflag + " " + EventName(eventflag) +
-//                            " start " + starttime + " delta " + mevent.DeltaTime);
+            Log.e("debug",  "offset " + startoffset +
+                            " event " + eventflag + " " + EventName(eventflag) +
+                            " start " + starttime + " delta " + mevent.DeltaTime);
 
             if (eventflag >= EventNoteOn && eventflag < EventNoteOn + 16) {
                 mevent.EventFlag = EventNoteOn;
@@ -670,7 +670,7 @@ public class MidiFile {
                 mevent.Metaevent = file.ReadByte();
                 mevent.Metalength = file.ReadVarlen();
                 mevent.Value = file.ReadBytes(mevent.Metalength);
-//                Log.e("debug","Metaevent = "+ MetaName(mevent.Metaevent));
+                Log.e("debug","Metaevent = "+ MetaName(mevent.Metaevent));
                 if (mevent.Metaevent == MetaEventTimeSignature) {
                     if (mevent.Metalength < 2) {
                         throw new MidiFileException(
