@@ -86,6 +86,8 @@ public class MidiTrack {
 //        System.out.println("第一個音符Starttime: " + notes.get(0).getStartTime());
     }
 
+    public void set_tracknumber(int i){this.tracknum = i;}
+
     public int trackNumber() { return tracknum; }
 
     public ArrayList<MidiNote> getNotes() { return notes; }

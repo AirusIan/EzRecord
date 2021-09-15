@@ -504,10 +504,12 @@ public class MidiFile {
         quarternote = file.ReadShort();
 
         allevents = new ArrayList<ArrayList<MidiEvent>>();
+        int trackindex = 0;
         for (int tracknum = 0; tracknum < num_tracks; tracknum++) {
             allevents.add(ReadTrack(file));
             MidiTrack track = new MidiTrack(allevents.get(tracknum), tracknum);
             if (track.getNotes().size() > 0) {
+                track.set_tracknumber(trackindex++);
                 tracks.add(track);
             }
         }
