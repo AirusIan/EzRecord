@@ -32,7 +32,7 @@ android {
 //            D:\Anaconda3\envs\Android_FinalProject\python.exe 建名的路徑
 //            C:\\Users\\Antonio\\AppData\\Local\\Programs\\Python\\Python39\\python.exe 翔安的路徑
 //            "C:\\Users\\HP-NB\\Anaconda3\\python.exe" 旭智的路徑 QQ
-            buildPython "C:\\Users\\User\\anaconda3\\envs\\myenv\\python.exe"
+            buildPython "D:\\Anaconda3\\envs\\Android_FinalProject\\python.exe"
 
             // 安装python库
             pip {
@@ -73,8 +73,8 @@ dependencies {
     implementation "androidx.annotation:annotation:1.1.0"
     implementation "com.google.android.material:material:1.0.0"
     implementation "androidx.constraintlayout:constraintlayout:1.1.3"
-//    implementation 'androidx.navigation:navigation-fragment:2.2.2'
-//    implementation 'androidx.navigation:navigation-ui:2.2.2'
+    implementation 'androidx.navigation:navigation-fragment:2.2.2'
+    implementation 'androidx.navigation:navigation-ui:2.2.2'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 }

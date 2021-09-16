@@ -57,19 +57,19 @@ abstract class AbstractExpandableSwitchDrawerItem<Item : AbstractExpandableSwitc
         }
     }
 
-    fun withChecked(checked: Boolean): Item {
+    fun withChecked(checked: Boolean): AbstractExpandableSwitchDrawerItem<Item> {
         this.isChecked = checked
-        return this as Item
+        return this;
     }
 
-    fun withSwitchEnabled(switchEnabled: Boolean): Item {
+    fun withSwitchEnabled(switchEnabled: Boolean): AbstractExpandableSwitchDrawerItem<Item> {
         this.isSwitchEnabled = switchEnabled
-        return this as Item
+        return this;
     }
 
-    fun withOnCheckedChangeListener(onCheckedChangeListener: OnCheckedChangeListener): Item {
+    fun withOnCheckedChangeListener(onCheckedChangeListener: OnCheckedChangeListener): AbstractExpandableSwitchDrawerItem<Item> {
         this.onCheckedChangeListener = onCheckedChangeListener
-        return this as Item
+        return this;
     }
 
     fun withCheckable(checkable: Boolean): Item {
@@ -105,29 +105,29 @@ abstract class AbstractExpandableSwitchDrawerItem<Item : AbstractExpandableSwitc
         }
     }
 
-    fun withArrowColor(@ColorInt arrowColor: Int): Item {
+    fun withArrowColor(@ColorInt arrowColor: Int): AbstractExpandableSwitchDrawerItem<Item> {
         this.arrowColor = ColorHolder.fromColor(arrowColor)
-        return this as Item
+        return this;
     }
 
-    fun withArrowColorRes(@ColorRes arrowColorRes: Int): Item {
+    fun withArrowColorRes(@ColorRes arrowColorRes: Int): AbstractExpandableSwitchDrawerItem<Item> {
         this.arrowColor = ColorHolder.fromColorRes(arrowColorRes)
-        return this as Item
+        return this;
     }
 
-    fun withArrowRotationAngleStart(angle: Int): Item {
+    fun withArrowRotationAngleStart(angle: Int): AbstractExpandableSwitchDrawerItem<Item> {
         this.arrowRotationAngleStart = angle
-        return this as Item
+        return this;
     }
 
-    fun withArrowRotationAngleEnd(angle: Int): Item {
+    fun withArrowRotationAngleEnd(angle: Int): AbstractExpandableSwitchDrawerItem<Item> {
         this.arrowRotationAngleEnd = angle
-        return this as Item
+        return this;
     }
 
     override fun withOnDrawerItemClickListener(onDrawerItemClickListener: Drawer.OnDrawerItemClickListener): Item {
         mOnDrawerItemClickListener = onDrawerItemClickListener
-        return this as Item
+        return this as Item;
     }
 
     override fun bindView(holder: ViewHolder, payloads: MutableList<Any>) {
