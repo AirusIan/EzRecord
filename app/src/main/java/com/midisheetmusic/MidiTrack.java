@@ -110,6 +110,10 @@ public class MidiTrack {
         notes.add(m);
     }
 
+    public void AddAtNote(int position, MidiNote m) {
+        notes.add(position, m);
+    }
+
     public void Delete(int m) {
         notes.remove(m);
     }

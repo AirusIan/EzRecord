@@ -16,49 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <Button
-            android:id="@+id/eightnote"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/eighthnote" />
-        <Button
-            android:id="@+id/dotquarternote"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/dotquarternote" />
-        <Button
-            android:id="@+id/downnote"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/downnote" />
-        <Button
-            android:id="@+id/halfnote"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/halfnote" />
-        <Button
-            android:id="@+id/quarternote"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/quarternote" />
-        <Button
-            android:id="@+id/quarterrest"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/quarterrest" />
         <Button
             android:id="@+id/sixteennote"
             android:layout_width="10dp"
@@ -67,12 +24,26 @@
             android:visibility="gone"
             android:drawableLeft="@drawable/sixteennote" />
         <Button
-            android:id="@+id/upnote"
+            android:id="@+id/eightnote"
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:visibility="gone"
-            android:drawableLeft="@drawable/upnote" />
+            android:drawableLeft="@drawable/eighthnote" />
+        <Button
+            android:id="@+id/quarternote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/quarternote" />
+        <Button
+            android:id="@+id/halfnote"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/halfnote" />
         <Button
             android:id="@+id/wholenote"
             android:layout_width="10dp"
@@ -80,7 +51,13 @@
             android:layout_weight="1"
             android:visibility="gone"
             android:drawableLeft="@drawable/wholenote" />
-
+        <Button
+            android:id="@+id/quarterrest"
+            android:layout_width="10dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/quarterrest" />
         <Button
             android:id="@+id/ic_rewind"
             android:layout_width="20dp"
@@ -113,6 +90,7 @@
             android:layout_weight="1"
             android:drawableLeft="@android:drawable/ic_delete"
             android:onClick="ondeleteClick"
+            android:visibility="gone"
             android:text="刪除" />
         <Button
             android:id="@+id/ic_done"

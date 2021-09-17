@@ -1022,6 +1022,14 @@ public class MidiFile {
         Write(destfile, newevents, options);
     }
 
+    public void eventUpdate(){
+        ArrayList<ArrayList<MidiEvent>> newevents = new ArrayList<ArrayList<MidiEvent>>();
+        for(MidiTrack track : tracks) {
+            newevents.add(track.Covert2Event());
+        }
+        allevents = newevents;
+    }
+
     public void Write(FileOutputStream destfile, ArrayList<ArrayList<MidiEvent>> newevents ,MidiOptions options)
       throws IOException {
         if (options != null) {

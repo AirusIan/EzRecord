@@ -93,6 +93,7 @@ public class ChooseSongActivity extends TabActivity {
 
 
         startActivity(intent);
+        finish();
     }
 
 
