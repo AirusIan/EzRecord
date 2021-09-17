@@ -39,7 +39,7 @@ public class AudioFileFunc {
         String mAudioRawPath = "" ;
         if (isSdcardExit()){
             String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            mAudioRawPath = fileBasePath+ "/recorderdemo/RawFile/" + currentTime +AUDIO_RAW_FILENAME;
+            mAudioRawPath = fileBasePath+ "/Ezrecord/RawFile/" + currentTime +AUDIO_RAW_FILENAME;
         }
 
         return mAudioRawPath;
@@ -53,7 +53,7 @@ public class AudioFileFunc {
         String mAudioWavPath = "" ;
         if (isSdcardExit()){
             String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            mAudioWavPath = fileBasePath+ "/recorderdemo/WavFile/" + currentTime +AUDIO_WAV_FILENAME;
+            mAudioWavPath = fileBasePath+ "/Ezrecord/WavFile/" + currentTime +AUDIO_WAV_FILENAME;
         }
         return mAudioWavPath;
     }
@@ -67,7 +67,7 @@ public class AudioFileFunc {
         String mAudioAMRPath = "" ;
         if (isSdcardExit()){
             String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            mAudioAMRPath = fileBasePath+ "/recorderdemo/AMRFile/" + currentTime +AUDIO_AMR_FILENAME;
+            mAudioAMRPath = fileBasePath+ "/Ezrecord/AMRFile/" + currentTime +AUDIO_AMR_FILENAME;
         }
         return mAudioAMRPath;
     }

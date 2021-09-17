@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class FileUtils {
 
-    private  static String rootPath="recorderdemo";
+    private  static String rootPath="Ezrecord";
     //原始文件(不能播放)
     private final static String AUDIO_PCM_BASEPATH = "/"+rootPath+"/PCMFile/";
     //可播放的高质量音频文件

@@ -83,7 +83,9 @@ public class MidiTrack {
         if (notes.size() > 0 && notes.get(0).getChannel() == 9)  {
             instrument = 128;  /* Percussion */
         }
-//        System.out.println("第一個音符Starttime: " + notes.get(0).getStartTime());
+        for(MidiNote note:notes){
+            System.out.println(note);
+        }
     }
 
     public void set_tracknumber(int i){this.tracknum = i;}
