@@ -2,7 +2,6 @@ package com.midisheetmusic;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
@@ -25,7 +24,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
@@ -233,8 +231,7 @@ public class RecordActivity extends AppCompatActivity {
         }
 
 //        status = false;
-        Toast.makeText(RecordActivity.this, "錄音結束，轉檔開始", Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(RecordActivity.this, "錄音結束", Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -248,7 +245,6 @@ public class RecordActivity extends AppCompatActivity {
 
 //        status = false;
         Toast.makeText(RecordActivity.this, "捨棄錄音檔", Toast.LENGTH_SHORT).show();
-
         return true;
     }
 
@@ -284,15 +280,17 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-    private void callAudio2midi(String file_in, String file_out){
+    private String callWav2midi(String file_in, String file_out){
+        String message = "";
         try {
             Python py = Python.getInstance();
-            PyObject pyObject_result = py.getModule("audio2midi").callAttr("run", file_in, file_out);
+            PyObject pyObject_result = py.getModule("wav2midi").callAttr("wav2midi", file_in, file_out);
             py.getBuiltins().get("help").call();
-            pyObject_result.toJava(Integer.class);
+            message = pyObject_result.toJava(String.class);
         }catch (Exception e){
             e.printStackTrace();
         }
+        return message;
     }
 
 
@@ -341,6 +339,7 @@ public class RecordActivity extends AppCompatActivity {
 
         ProgressDialog mProgressDialog = null;
         String midiFilePath = "";
+        String message = "";
 
         @Override
         protected void onPreExecute() {
@@ -361,22 +360,25 @@ public class RecordActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            String wavFilePath = fileBasePath + "/recorderdemo/WavFile/" + fileName + ".wav";
-            midiFilePath = fileBasePath + "/recorderdemo/MidiFile/" + fileName + ".mid";
-
-            callAudio2midi(wavFilePath, midiFilePath);
+            String wavFilePath = fileBasePath + "/Ezrecord/WavFile/" + fileName + ".wav";
+            midiFilePath = fileBasePath + "/Ezrecord/" + fileName + ".mid";
+            message = callWav2midi(wavFilePath, midiFilePath);
             mProgressDialog.cancel();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            File file = new File(midiFilePath);
-            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
-            Uri uri = Uri.parse("file://" + midiFilePath);
-            FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
-            doOpenFile(fileuri);
-            mProgressDialog.cancel();
+            if (message.equals("Success")){
+                File file = new File(midiFilePath);
+                if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+                Uri uri = Uri.parse("file://" + midiFilePath);
+                FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
+                doOpenFile(fileuri);
+                mProgressDialog.cancel();
+            }else{
+                ChooseSongActivity.showErrorDialog("Error: "+message,RecordActivity.this);
+            }
         }
     }
 

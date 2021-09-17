@@ -372,7 +372,7 @@ public class EditorActivity extends  MidiHandlingActivity {
     private void createFile() {
         str_saveName = str_saveName + ".mid";
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String midiFilePath = filePath + "/midiSaveFile/" + str_saveName;
+        String midiFilePath = filePath + "/Ezrecord/" + str_saveName;
 
         File saved_file = new File(midiFilePath);
         if (!saved_file.getParentFile().exists()) {
