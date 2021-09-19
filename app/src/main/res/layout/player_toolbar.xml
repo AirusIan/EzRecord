@@ -11,7 +11,7 @@
     android:layout_marginStart="0dp"
     android:layout_marginTop="4dp"
     android:layout_marginEnd="0dp"
-    android:background="@color/secondary_text"
+    android:background="@color/welcome"
     android:orientation="horizontal">
 
     <ImageButton
@@ -64,15 +64,15 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:progressBackgroundTint="@color/icons"
-        android:progressTint="#1FC3F4"
-        android:thumbTint="@color/material_drawer_primary"
+        android:progressTint="@color/divider"
+        android:thumbTint="@color/icons"
         android:progress="100" />
 
     <Button
         android:id="@+id/btn_midi"
         style="@style/DisabledToolbarButton"
         android:text="MIDI"
-        android:textColor="#28B7F8"
+        android:textColor="@color/icons"
         android:enabled="false"
         android:layout_width="80dp"
         android:textSize="16sp" />
