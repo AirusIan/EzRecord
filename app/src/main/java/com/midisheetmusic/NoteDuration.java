@@ -15,7 +15,7 @@ package com.midisheetmusic;
 /** The possible note durations */
 public enum NoteDuration {
   ThirtySecond, Sixteenth, Triplet, Eighth,
-  DottedEighth, Quarter, DottedQuarter,DottedSixteenth,
+  DottedEighth, Quarter, DottedQuarter, DottedSixteenth,
   Half, DottedHalf, Whole
 }
 
