@@ -85,6 +85,7 @@ public class RestSymbol implements MusicSymbol {
         else if (duration == NoteDuration.Sixteenth) {
             DrawSixteenth(canvas, paint, ytop);
         }
+
         canvas.translate(-SheetMusic.NoteHeight/2, 0);
         canvas.translate(-(getWidth() - getMinWidth()), 0);
     }
@@ -166,6 +167,7 @@ public class RestSymbol implements MusicSymbol {
 
     public void DrawSixteenth(Canvas canvas, Paint paint, int ytop) {
         int y = ytop ; //NoteHeight = LineSpace + LineWidth
+
         //第一個點的大小
         RectF rect1 = new RectF(0, y,
                 SheetMusic.LineSpace-1, y + SheetMusic.LineSpace-1);
@@ -174,12 +176,11 @@ public class RestSymbol implements MusicSymbol {
         canvas.drawOval(rect1, paint);
         //第二個點的大小
         RectF rect2 = new RectF(-2, ytop + SheetMusic.NoteHeight ,
-                SheetMusic.LineSpace-3, y+1 + 2*SheetMusic.LineSpace-1);
+                SheetMusic.LineSpace-3, y + 2*SheetMusic.LineSpace);
         paint.setStyle(Paint.Style.FILL);
         //第二個點
         canvas.drawOval(rect2, paint);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(1);
+
 
         //上面的斜線
         canvas.drawLine((SheetMusic.LineSpace-2)/2, y + SheetMusic.LineSpace-1,
@@ -191,6 +192,7 @@ public class RestSymbol implements MusicSymbol {
         canvas.drawLine(3*SheetMusic.LineSpace/2, y-1 + SheetMusic.LineSpace/2,
                 3*SheetMusic.LineSpace/4 -2, y + SheetMusic.NoteHeight*3-1, paint);
     }
+
 
     public String toString() {
         return String.format("RestSymbol starttime=%1$s duration=%2$s width=%3$s",

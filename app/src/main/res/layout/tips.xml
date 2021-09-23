@@ -120,7 +120,7 @@
                 android:layout_marginRight="30dp"
                 android:layout_weight="1"
                 android:backgroundTint="#ED7C12B6"
-                android:text="莊嚴"
+                android:text="嚴肅"
                 android:textSize="24sp" />
 
             <Button

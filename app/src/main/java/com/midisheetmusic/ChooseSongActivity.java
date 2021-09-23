@@ -69,7 +69,7 @@ public class ChooseSongActivity extends TabActivity {
         for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)
         {
 
-            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#1177EE")); //Changing background color of tab
+            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#eeb311")); //Changing background color of tab
 
             TextView tv = (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title); /*for Selected Tab changing text color*/
             tv.setTextColor(Color.WHITE);

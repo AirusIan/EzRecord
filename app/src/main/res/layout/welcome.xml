@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/welcome_background3">
+    android:background="@drawable/welcome_back_ground">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/welcome_layout"
@@ -19,7 +19,7 @@
         android:layout_height="52dp"
         android:fontFamily="monospace"
         android:gravity="center"
-        android:text="哼 唱 寫 譜"
+        android:text="EzRecord"
         android:textColor="#ae7a00"
         android:textSize="32sp"
         app:layout_constraintBottom_toBottomOf="parent"
