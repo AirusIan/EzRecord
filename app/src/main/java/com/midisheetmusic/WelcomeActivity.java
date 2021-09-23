@@ -52,7 +52,6 @@ public class WelcomeActivity extends AppCompatActivity {
             btn_record.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    System.out.println("Start test");
                     btn_record.startAnim();
 
                     handler.postDelayed(new Runnable() {
