@@ -1,14 +1,20 @@
 package com.midisheetmusic.ServerConnect;
 
+import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.midisheetmusic.ChooseSongActivity;
+import com.midisheetmusic.RecordActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 
 
 import okhttp3.MultipartBody;
@@ -26,12 +32,17 @@ import okhttp3.MediaType;
 public class RequestHandle {
     private final String baseurl = "http://140.115.87.119:8000";
 
+    private int DEFAULT_TIMEOUT = 240;
+
+    private OkHttpClient httpClient =
+            new OkHttpClient.Builder().connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                    .writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).build();
+
     private final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(baseurl)
+            .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create()).build();
-
-    private OkHttpClient.Builder httpClient =
-            new OkHttpClient.Builder();
 
     private Request_Interface requestInterface = retrofit.create(Request_Interface.class);
 
@@ -63,6 +74,7 @@ public class RequestHandle {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("Upload error", t.getMessage());
+                mainThreadHandler.sendEmptyMessage(3);
             }
         });
         return true;
@@ -73,18 +85,24 @@ public class RequestHandle {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response_raw) {
-                String midpath_server = "";
-                try {
-                    midpath_server = response_raw.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(response_raw.isSuccessful()){
+                    String midpath_server = "";
+                    try {
+                        midpath_server = response_raw.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Log.v("Wav2midi success", "response midpath=" + midpath_server);
+                    download(midpath_server);
+                }else{
+                    Log.e("Wav2midi error",response_raw.raw().message());
+                    mainThreadHandler.sendEmptyMessage(2);
                 }
-                Log.v("Wav2midi success", "response midpath=" + midpath_server);
-                download(midpath_server);
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("Wav2midi error", t.getMessage());
+                mainThreadHandler.sendEmptyMessage(3);
             }
         });
     }
@@ -106,12 +124,14 @@ public class RequestHandle {
                             mainThreadHandler.sendEmptyMessage(1);
                         }else{
                             Log.e("writeToDisk Error","");
+                            mainThreadHandler.sendEmptyMessage(4);
                         }
                     }
 
                     @Override
                     public void onFailure (Call < ResponseBody > call, Throwable t){
                         Log.e("Downlaod error", t.getMessage());
+                        mainThreadHandler.sendEmptyMessage(3);
                     }
                 });
                 return null;

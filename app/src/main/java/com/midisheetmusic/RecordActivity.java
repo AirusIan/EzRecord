@@ -222,6 +222,21 @@ public class RecordActivity extends AppCompatActivity {
                             doOpenFile(fileuri);
                             mProgressDialog.cancel();
                             break;
+                        case 2:
+                            mProgressDialog.cancel();
+                            ChooseSongActivity.showErrorDialog("請檢查您的麥克風是否有開啟", RecordActivity.this);
+                            this.removeCallbacksAndMessages(null);
+                            break;
+                        case 3:
+                            mProgressDialog.cancel();
+                            ChooseSongActivity.showErrorDialog("網路傳輸出現問題，請再重錄一次", RecordActivity.this);
+                            this.removeCallbacksAndMessages(null);
+                            break;
+                        case 4:
+                            mProgressDialog.cancel();
+                            ChooseSongActivity.showErrorDialog("檔案寫入出現問題", RecordActivity.this);
+                            this.removeCallbacksAndMessages(null);
+                            break;
                         default:
                             break;
                     }
