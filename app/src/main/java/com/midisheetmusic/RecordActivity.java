@@ -6,9 +6,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.os.Environment;
 import android.provider.Settings;
@@ -25,9 +26,10 @@ import androidx.core.content.ContextCompat;
 
 import java.io.File;
 
-import com.chaquo.python.PyObject;
-import com.chaquo.python.Python;
-import com.chaquo.python.android.AndroidPlatform;
+//import com.chaquo.python.PyObject;
+//import com.chaquo.python.Python;
+//import com.chaquo.python.android.AndroidPlatform;
+import com.midisheetmusic.ServerConnect.RequestHandle;
 import com.midisheetmusic.AudioRecorder.AudioRecordFunc;
 import com.midisheetmusic.AudioRecorder.FileUtils;
 
@@ -50,7 +52,7 @@ public class RecordActivity extends AppCompatActivity {
     private String fileName = null;
     ImageButton btn_play = null;
     ImageButton btn_record = null;
-    ImageButton btn_stop = null;
+    ImageButton btn_finishRecording = null;
     ImageButton btn_reset = null;
     ImageButton btn_delete = null;
     ImageButton btn_music_note = null;
@@ -60,7 +62,9 @@ public class RecordActivity extends AppCompatActivity {
     long pauseOffset = 0;
     AudioRecordFunc mAudioRecordFunc = new AudioRecordFunc();
 
-    String newWavFile = "";
+    ProgressDialog mProgressDialog = null;
+    String midiFilePath = "";
+    Handler handler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,81 +76,159 @@ public class RecordActivity extends AppCompatActivity {
         //檢查權限
         checkPermission();
 
-        initPython();
+//        initPython();
 
         btn_play = (ImageButton) findViewById(R.id.btn_play);
         btn_record = (ImageButton) findViewById(R.id.btn_mic);
-        btn_stop = (ImageButton) findViewById(R.id.btn_check);
+        btn_finishRecording = (ImageButton) findViewById(R.id.btn_check);
         btn_reset = (ImageButton) findViewById(R.id.btn_reset);
         btn_delete = (ImageButton) findViewById(R.id.btn_delete);
         btn_music_note = (ImageButton) findViewById(R.id.btn_music_note);
         chronometer_timer = (Chronometer) findViewById(R.id.timer);
 
-            btn_play.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    isPlay = !isPlay;
-                    if(isPlay) {
-                        doPlay();
-                    }else{
-                        doFinish();
-                    }
-                }
-            });
-            btn_record.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    status = !status;
-                    btn_record.setSelected(!btn_record.isSelected());
-                    if (btn_record.isSelected()) {
-                        doStart();
-                        chronometer_timer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
-                        chronometer_timer.start();
-                    } else {
-                        doPause();
-                        chronometer_timer.stop();
-                        pauseOffset = SystemClock.elapsedRealtime() - chronometer_timer.getBase();
-                    }
-                }
-            });
-            btn_stop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    btn_record.setSelected(false);
-                    doStop();
-                    chronometer_timer.stop();
-                    pauseOffset = SystemClock.elapsedRealtime() - chronometer_timer.getBase();
-                }
-            });
+        ImageButton[] FinishRecordUnits = {btn_delete,btn_music_note,btn_play};
+        ImageButton[] RecordingUnits = {btn_reset,btn_finishRecording};
 
+        for(ImageButton b:FinishRecordUnits){
+            b.setClickable(false);
+            b.setVisibility(View.INVISIBLE);
+        }
+        for(ImageButton btn:RecordingUnits){
+            btn.setClickable(false);
+            btn.setVisibility(View.INVISIBLE);
+        }
 
-            btn_reset.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    btn_record.setSelected(false);
-                    doReset();
-                    chronometer_timer.setBase(SystemClock.elapsedRealtime());
-                    pauseOffset = 0;
-                }
-            });
-
-            btn_delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    doDelete();
-                    chronometer_timer.setBase(SystemClock.elapsedRealtime());
-                    pauseOffset = 0;
-                }
-            });
-
-            btn_music_note.setOnClickListener(new View.OnClickListener() {
+        btn_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ProgressDialog_Modify p = new ProgressDialog_Modify();
-                p.execute();
+                isPlay = !isPlay;
+                if(isPlay) {
+                    doPlay();
+                }else{
+                    doFinishPlaying();
+                }
             }
         });
 
+        btn_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                status = !status;
+                btn_record.setSelected(!btn_record.isSelected());
+                if (btn_record.isSelected()) {
+                    for(ImageButton b:FinishRecordUnits){
+                        b.setClickable(false);
+                        b.setVisibility(View.INVISIBLE);
+                    }
+                    for(ImageButton btn:RecordingUnits){
+                        btn.setClickable(false);
+                        btn.setVisibility(View.INVISIBLE);
+                    }
+                    doStart();
+                    chronometer_timer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
+                    chronometer_timer.start();
+                } else {
+                    for(ImageButton btn:RecordingUnits){
+                        btn.setClickable(true);
+                        btn.setVisibility(View.VISIBLE);
+                    }
+                    doPause();
+                    chronometer_timer.stop();
+                    pauseOffset = SystemClock.elapsedRealtime() - chronometer_timer.getBase();
+                }
+            }
+        });
+
+        btn_finishRecording.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for(ImageButton b:FinishRecordUnits){
+                    b.setClickable(true);
+                    b.setVisibility(View.VISIBLE);
+                }
+                for(ImageButton btn:RecordingUnits){
+                    btn.setClickable(false);
+                    btn.setVisibility(View.INVISIBLE);
+                }
+                btn_record.setClickable(false);
+                btn_finishRecording.setClickable(false);
+                btn_finishRecording.setVisibility(View.INVISIBLE);
+                btn_record.setSelected(false);
+                doStop();
+                chronometer_timer.stop();
+                pauseOffset = SystemClock.elapsedRealtime() - chronometer_timer.getBase();
+            }
+        });
+
+
+        btn_reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn_record.setSelected(false);
+                doReset();
+                chronometer_timer.setBase(SystemClock.elapsedRealtime());
+                pauseOffset = 0;
+                for(ImageButton b:FinishRecordUnits){
+                    b.setClickable(false);
+                    b.setVisibility(View.INVISIBLE);
+                }
+                for(ImageButton btn:RecordingUnits){
+                    btn.setClickable(false);
+                    btn.setVisibility(View.INVISIBLE);
+                }
+                btn_record.setVisibility(View.VISIBLE);
+                btn_record.setClickable(true);
+            }
+        });
+
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doDelete();
+                chronometer_timer.setBase(SystemClock.elapsedRealtime());
+                pauseOffset = 0;
+                for(ImageButton b:FinishRecordUnits){
+                    b.setClickable(false);
+                    b.setVisibility(View.INVISIBLE);
+                }
+                for(ImageButton btn:RecordingUnits){
+                    btn.setClickable(false);
+                    btn.setVisibility(View.INVISIBLE);
+                }
+                btn_record.setVisibility(View.VISIBLE);
+                btn_record.setClickable(true);
+            }
+        });
+
+        btn_music_note.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            createloadDialog();
+            String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            String wavFilePath = fileBasePath + "/Ezrecord/WavFile/" + fileName + ".wav";
+            midiFilePath = fileBasePath + "/Ezrecord/MidFile/" + fileName + ".mid";
+            File file = new File(wavFilePath);
+            RequestHandle requestHandle = new RequestHandle();
+            handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    switch (msg.what) {
+                        case 1:
+                            File file = new File(midiFilePath);
+                            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+                            Uri uri = Uri.parse("file://" + midiFilePath);
+                            FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
+                            doOpenFile(fileuri);
+                            mProgressDialog.cancel();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+            requestHandle.run_wav2midi(file,midiFilePath,handler);
+        }});
     }
 
 
@@ -160,7 +242,7 @@ public class RecordActivity extends AppCompatActivity {
         }
         return true;
     }
-    private boolean doFinish(){
+    private boolean doFinishPlaying(){
         try {
             mAudioRecordFunc.releaseAudioTrack();
         }catch (Exception e){
@@ -268,29 +350,8 @@ public class RecordActivity extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_VIEW, file.getUri(), this, SheetMusicActivity.class);
         intent.putExtra(SheetMusicActivity.MidiTitleID, file.toString());
-
-
+        handler.removeCallbacksAndMessages(null);
         startActivity(intent);
-    }
-
-    // 初始化python
-    private void initPython(){
-        if (! Python.isStarted()) {
-            Python.start(new AndroidPlatform(this));
-        }
-    }
-
-    private String callWav2midi(String file_in, String file_out){
-        String message = "";
-        try {
-            Python py = Python.getInstance();
-            PyObject pyObject_result = py.getModule("wav2midi").callAttr("wav2midi", file_in, file_out);
-            py.getBuiltins().get("help").call();
-            message = pyObject_result.toJava(String.class);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return message;
     }
 
 
@@ -335,52 +396,18 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-    private class  ProgressDialog_Modify extends AsyncTask<Void,Void,Void>{
-
-        ProgressDialog mProgressDialog = null;
-        String midiFilePath = "";
-        String message = "";
-
-        @Override
-        protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(RecordActivity.this);
-            // 设置进度条的形式为圆形转动的进度条
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            // 设置是否可以通过点击Back键取消
-            mProgressDialog.setCancelable(false);
-            // 设置在点击Dialog外是否取消Dialog进度条
-            mProgressDialog.setCanceledOnTouchOutside(false);
-            // 设置提示的title的图标，默认是没有的，如果没有设置title的话只设置Icon是不会显示图标的
-            mProgressDialog.setIcon(R.mipmap.ic_launcher);
-            mProgressDialog.setTitle("轉檔進度");
-            mProgressDialog.setMessage("轉檔中，請燒等...");
-            mProgressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            String wavFilePath = fileBasePath + "/Ezrecord/WavFile/" + fileName + ".wav";
-            midiFilePath = fileBasePath + "/Ezrecord/" + fileName + ".mid";
-            message = callWav2midi(wavFilePath, midiFilePath);
-            mProgressDialog.cancel();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (message.equals("Success")){
-                File file = new File(midiFilePath);
-                if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
-                Uri uri = Uri.parse("file://" + midiFilePath);
-                FileUri fileuri = new FileUri(uri, uri.getLastPathSegment());
-                doOpenFile(fileuri);
-                mProgressDialog.cancel();
-            }else{
-                ChooseSongActivity.showErrorDialog("Error: "+message,RecordActivity.this);
-            }
-        }
+    private void createloadDialog(){
+        mProgressDialog = new ProgressDialog(RecordActivity.this);
+        // 设置进度条的形式为圆形转动的进度条
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        // 设置是否可以通过点击Back键取消
+        mProgressDialog.setCancelable(false);
+        // 设置在点击Dialog外是否取消Dialog进度条
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        // 设置提示的title的图标，默认是没有的，如果没有设置title的话只设置Icon是不会显示图标的
+        mProgressDialog.setIcon(R.mipmap.ic_launcher);
+        mProgressDialog.setTitle("轉檔進度");
+        mProgressDialog.setMessage("轉檔中，請燒等...");
+        mProgressDialog.show();
     }
-
-
 }

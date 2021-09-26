@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.android.application'
-apply plugin: 'com.chaquo.python'
+//apply plugin: 'com.chaquo.python'
 
 repositories {
     maven {
@@ -21,26 +21,26 @@ android {
 
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-        }
+//        ndk {
+//            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+//        }
 
-        python {
-            // 指定python路径
-//            C:\Users\User\anaconda3\envs\myenv\python.exe 昭穎的路徑(防止被蓋掉_備用)
-//            C:\\Users\\pody\\anaconda3\\python.exe 秉宏
-//            D:\Anaconda3\envs\Android_FinalProject\python.exe 建名的路徑
-//            C:\\Users\\Antonio\\AppData\\Local\\Programs\\Python\\Python39\\python.exe 翔安的路徑
-//            "C:\\Users\\HP-NB\\Anaconda3\\python.exe" 旭智的路徑
-            buildPython "C:\\Users\\Antonio\\AppData\\Local\\Programs\\Python\\Python39\\python.exe"
-
-            // 安装python库
-            pip {
-                install "numpy"
-                install "librosa"
-                install "mido"
-            }
-        }
+//        python {
+//            // 指定python路径
+////            C:\Users\User\anaconda3\envs\myenv\python.exe 昭穎的路徑(防止被蓋掉_備用)
+////            C:\\Users\\pody\\anaconda3\\python.exe 秉宏
+////            D:\Anaconda3\envs\Android_FinalProject\python.exe 建名的路徑
+////            C:\\Users\\Antonio\\AppData\\Local\\Programs\\Python\\Python39\\python.exe 翔安的路徑
+////            "C:\\Users\\HP-NB\\Anaconda3\\python.exe" 旭智的路徑
+//            buildPython "C:\\Users\\Antonio\\AppData\\Local\\Programs\\Python\\Python39\\python.exe"
+//
+//            // 安装python库
+//            pip {
+//                install "numpy"
+//                install "librosa"
+//                install "mido"
+//            }
+//        }
 
     }
 
@@ -77,4 +77,15 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.2.2'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+
+    implementation('com.squareup.retrofit2:retrofit:2.9.0')
+    implementation('com.squareup.retrofit2:converter-gson:2.9.0')
+    // Retrofit库
+    // define a BOM and its version
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
+
+    // define any required OkHttp artifacts without version
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+    // Okhttp庫
 }
