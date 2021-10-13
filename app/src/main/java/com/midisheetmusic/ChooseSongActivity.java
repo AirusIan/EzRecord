@@ -66,8 +66,7 @@ public class ChooseSongActivity extends TabActivity {
                 .setIndicator("Browse", new BitmapDrawable(this.getResources(), browseFilesIcon))
                 .setContent(new Intent(this, FileBrowserActivity.class)));
 
-        for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)
-        {
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
 
             tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#eeb311")); //Changing background color of tab
 
@@ -93,11 +92,12 @@ public class ChooseSongActivity extends TabActivity {
 
 
         startActivity(intent);
-        finish();
     }
 
 
-    /** Show an error dialog with the given message */
+    /**
+     * Show an error dialog with the given message
+     */
     public static void showErrorDialog(String message, Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(message);
@@ -108,8 +108,9 @@ public class ChooseSongActivity extends TabActivity {
         alert.show();
     }
 
-    /** Save the given FileUri into the "recentFiles" preferences.
-     *  Save a maximum of 10 recent files.
+    /**
+     * Save the given FileUri into the "recentFiles" preferences.
+     * Save a maximum of 10 recent files.
      */
     public void updateRecentFile(FileUri recentfile) {
         try {
@@ -119,8 +120,7 @@ public class ChooseSongActivity extends TabActivity {
             String recentFilesString = settings.getString("recentFiles", null);
             if (recentFilesString != null) {
                 prevRecentFiles = new JSONArray(recentFilesString);
-            }
-            else {
+            } else {
                 prevRecentFiles = new JSONArray();
             }
             JSONArray recentFiles = new JSONArray();
@@ -135,12 +135,19 @@ public class ChooseSongActivity extends TabActivity {
                     recentFiles.put(file);
                 }
             }
-            editor.putString("recentFiles", recentFiles.toString() );
+            editor.putString("recentFiles", recentFiles.toString());
             editor.apply();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e(LOG_TAG, Thread.currentThread().getStackTrace()[2].getMethodName(), e);
         }
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 }
 

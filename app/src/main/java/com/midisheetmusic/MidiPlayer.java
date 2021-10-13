@@ -254,6 +254,7 @@ public class MidiPlayer extends LinearLayout {
                 playTipButton.setOnClickListener(v -> Play());
                 btn_addSheet.setOnClickListener(a -> {
                     TipsSheetActivity.addTitle = midifile.getFileName();
+                    TipsSheetActivity.addUri = TipsSheetActivity.tempUri;
                     Toast.makeText(activity, "設定成功", Toast.LENGTH_SHORT).show();
                 });
 

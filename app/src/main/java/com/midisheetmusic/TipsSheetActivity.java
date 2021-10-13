@@ -22,6 +22,7 @@ public class TipsSheetActivity extends MidiHandlingActivity{
     private TextView textView;
 
     public static Uri addUri;
+    public static Uri tempUri;
     public static String addTitle;
 
 /*  1-1. 相同音檔 測試有沒有辦法直接讀取音軌的全部聲音然後加入至樂譜後面
@@ -71,8 +72,8 @@ public class TipsSheetActivity extends MidiHandlingActivity{
         if (title == null) {
             title = uri.getLastPathSegment();
         }
-        addUri = uri;
-        addTitle = title;
+        tempUri = uri;
+
         FileUri file = new FileUri(uri, title);
         this.setTitle("MidiSheetMusic: " + title);
 
