@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout_in_editor_bar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:id="@+id/toolbarlayout_of_editor_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:background="@color/welcome"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,43 +21,49 @@
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/sixteennote" />
+            android:drawableLeft="@drawable/sixteennote"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/eightnote"
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/eighthnote" />
+            android:drawableLeft="@drawable/eighthnote"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/quarternote"
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/quarternote" />
+            android:drawableLeft="@drawable/quarternote"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/halfnote"
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/halfnote" />
+            android:drawableLeft="@drawable/halfnote"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/wholenote"
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/wholenote" />
+            android:drawableLeft="@drawable/wholenote"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/quarterrest"
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:visibility="gone"
-            android:drawableLeft="@drawable/quarterrest" />
+            android:drawableLeft="@drawable/quarterrest"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/ic_rewind"
             android:layout_width="20dp"
@@ -83,6 +89,7 @@
             android:drawableLeft="@drawable/ic_transpose"
             android:onClick="onTransposeClick"
             android:text="音高" />
+
         <Button
             android:id="@+id/ic_delete"
             android:layout_width="20dp"
@@ -90,17 +97,18 @@
             android:layout_weight="1"
             android:drawableLeft="@android:drawable/ic_delete"
             android:onClick="ondeleteClick"
-            android:visibility="gone"
-            android:text="刪除" />
+            android:text="刪除"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/ic_done"
             android:layout_width="20dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_done"
-            android:visibility="gone"
             android:onClick="doneClick"
-            android:text="完成" />
+            android:text="完成"
+            android:visibility="gone" />
 
 
         <Button
@@ -129,7 +137,6 @@
             android:text="符號" />
 
 
-
     </LinearLayout>
 
 
@@ -137,6 +144,7 @@
         android:id="@+id/editor_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="72dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
