@@ -203,7 +203,7 @@ public class MidiFile {
     private int quarternote;          /** The number of pulses per quarter note  一個四分音符幾拍*/
     private int totalpulses;          /** The total length of the song, in pulses */
     private boolean trackPerChannel;  /** True if we've split each channel into a track */
-
+    private int num_tracks;
     private static ArrayList<Integer> tracklens;
 
     /* The list of Midi Events */
@@ -393,7 +393,9 @@ public class MidiFile {
         else
             return "Unknown";
     }
-
+    public int getNumtracks(){
+        return num_tracks;
+    }
     /** Return a String representation of a meta-event */
     public static String MetaName(int ev) {
 
@@ -500,7 +502,7 @@ public class MidiFile {
             throw new MidiFileException("Bad MThd header", 4);
         }
         trackmode = (short) file.ReadShort();
-        int num_tracks = file.ReadShort();
+        num_tracks = file.ReadShort();
         quarternote = file.ReadShort();
 
         allevents = new ArrayList<ArrayList<MidiEvent>>();
@@ -1006,7 +1008,9 @@ public class MidiFile {
         }
         return newlist;
     }
-
+    public int getNum_tracks(){
+        return num_tracks;
+    }
     /** Write this Midi file to the given file.
      * If options is not null, apply those options to the midi events
      * before performing the write.
@@ -1058,7 +1062,7 @@ public class MidiFile {
          * midi file has tracks without notes. Re-compute the instruments, and 
          * tracks to keep.
          */
-        int num_tracks = allevents.size();
+        num_tracks = allevents.size();
         int[] instruments = new int[num_tracks];
         boolean[] keeptracks = new boolean[num_tracks];
         for (i = 0; i < num_tracks; i++) {

@@ -145,6 +145,9 @@ public class EditorActivity extends  MidiHandlingActivity {
                 Log.d("time_check", String.valueOf(midifile.getTime().DurationToTime(NoteDuration.Sixteenth)));
                 addNote(0, midifile.getTime().DurationToTime(NoteDuration.Sixteenth));
             });
+            System.out.println("有"+midifile.getTracks().size()+"條音軌");
+
+
 
         }
         catch (Exception e) {
@@ -245,37 +248,52 @@ public class EditorActivity extends  MidiHandlingActivity {
     public void ondeleteClick(View view) {
         int NotePulseTime = player.NotePulseTime();
         AlertDialog.Builder builder = new AlertDialog.Builder(EditorActivity.this);
+        System.out.println(midifile.getTracks().size());
         builder.setCancelable(false);
         builder.setMessage("選擇要刪除的音軌");
         //alterdialog最多可以放三個按鈕，且位置是固定的，分別是
         //setPositiveButton()右邊按鈕
         //setNegativeButton()中間按鈕
         //setNeutralButton()左邊按鈕
-        builder.setNeutralButton("ALL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                midifile.DeleteNote(NotePulseTime,3);
-                dialogInterface.dismiss();
-                createViews();
-            }
-        });
-        builder.setNegativeButton("Track 1", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                midifile.DeleteNote(NotePulseTime,0);
-                dialogInterface.dismiss();
-                createViews();
-            }
-        });
-        builder.setPositiveButton("Track 2", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                midifile.DeleteNote(NotePulseTime,1);
-                dialogInterface.dismiss();
-                createViews();
-            }
-        });
-        builder.create().show();
+        if(midifile.getTracks().size() == 1){
+            builder.setNegativeButton("Track 1", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    midifile.DeleteNote(NotePulseTime,0);
+                    dialogInterface.dismiss();
+                    createViews();
+                }
+            });
+            builder.create().show();
+        }
+        else {
+            builder.setNeutralButton("ALL", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    midifile.DeleteNote(NotePulseTime, 3);
+
+                    dialogInterface.dismiss();
+                    createViews();
+                }
+            });
+            builder.setNegativeButton("Track 1", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    midifile.DeleteNote(NotePulseTime, 0);
+                    dialogInterface.dismiss();
+                    createViews();
+                }
+            });
+            builder.setPositiveButton("Track 2", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    midifile.DeleteNote(NotePulseTime, 1);
+                    dialogInterface.dismiss();
+                    createViews();
+                }
+            });
+            builder.create().show();
+        }
     }
 
 
