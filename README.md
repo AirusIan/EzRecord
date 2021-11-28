@@ -2,6 +2,7 @@
 專題名稱：EzRecord\
 校名與科系：中央大學資訊管理系\
 團隊成員：凃建名、張旭智、黃昭穎、趙秉宏、楊翔安\
+Server檔案請見: https://github.com/vony123tony123/django_wav2midi
 \
 ![圖片](https://user-images.githubusercontent.com/43849007/134873328-933ea72b-82c1-410b-a666-6db4ec3c29b3.png)
 
