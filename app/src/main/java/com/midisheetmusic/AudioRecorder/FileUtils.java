@@ -1,11 +1,16 @@
 package com.midisheetmusic.AudioRecorder;
 
+import android.app.Activity;
 import android.os.Environment;
 import android.text.TextUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.content.Context;
+
+import com.midisheetmusic.RecordActivity;
 
 /**
  * Created by HXL on 16/8/11.
@@ -23,7 +28,7 @@ public class FileUtils {
         FileUtils.rootPath=rootPath;
     }
 
-    public static String getPcmFileAbsolutePath(String fileName){
+    public static String getPcmFileAbsolutePath(String fileName,Context context){
         if(TextUtils.isEmpty(fileName)){
             throw new NullPointerException("fileName isEmpty");
         }
@@ -35,7 +40,7 @@ public class FileUtils {
             if (!fileName.endsWith(".pcm")) {
                 fileName = fileName + ".pcm";
             }
-            String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + AUDIO_PCM_BASEPATH;
+            String fileBasePath = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC).getAbsolutePath() + AUDIO_PCM_BASEPATH;
             File file = new File(fileBasePath);
             //创建目录
             if (!file.exists()) {
@@ -47,7 +52,7 @@ public class FileUtils {
         return mAudioRawPath;
     }
 
-    public static String getWavFileAbsolutePath(String fileName) {
+    public static String getWavFileAbsolutePath(String fileName,Context context) {
         if(fileName==null){
             throw new NullPointerException("fileName can't be null");
         }
@@ -60,7 +65,7 @@ public class FileUtils {
             if (!fileName.endsWith(".wav")) {
                 fileName = fileName + ".wav";
             }
-            String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath() + AUDIO_WAV_BASEPATH;
+            String fileBasePath =  context.getExternalFilesDir(Environment.DIRECTORY_MUSIC).getAbsolutePath()+ AUDIO_WAV_BASEPATH;
             File file = new File(fileBasePath);
             //创建目录
             if (!file.exists()) {

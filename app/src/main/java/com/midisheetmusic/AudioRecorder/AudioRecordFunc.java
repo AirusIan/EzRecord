@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -46,16 +47,19 @@ public class AudioRecordFunc {
 
     private static long currentTime=0;
 
-    public AudioRecordFunc(){
+    Context context;
+
+    public AudioRecordFunc(Context context){
+        this.context = context;
         mExecutorService = Executors.newCachedThreadPool();
     }
 
-    public synchronized static AudioRecordFunc getInstance()
-    {
-        if (mInstance == null )
-            mInstance = new AudioRecordFunc();
-        return mInstance;
-    }
+//    public synchronized static AudioRecordFunc getInstance()
+//    {
+//        if (mInstance == null )
+//            mInstance = new AudioRecordFunc();
+//        return mInstance;
+//    }
 
     public  int startRecordAndFile() {
         //判断是否有外部存储设备sdcard
@@ -128,7 +132,7 @@ public class AudioRecordFunc {
             if (filesName.size() > 0) {
                 List<String> filePaths = new ArrayList<>();
                 for (String fileName : filesName) {
-                    filePaths.add(FileUtils.getPcmFileAbsolutePath(fileName));
+                    filePaths.add(FileUtils.getPcmFileAbsolutePath(fileName,context));
                 }
                 //清除
                 filesName.clear();
@@ -161,7 +165,7 @@ public class AudioRecordFunc {
 
     public void deleteRecord(){
         if(audioRecord == null && AudioName != null) {
-            File file = new File(FileUtils.getWavFileAbsolutePath(AudioName));
+            File file = new File(FileUtils.getWavFileAbsolutePath(AudioName,context));
             if (file.exists()) {
                 file.delete();
             }
@@ -173,7 +177,7 @@ public class AudioRecordFunc {
         if (filesName.size() > 0) {
             List<String> filePaths = new ArrayList<>();
             for (String fileName : filesName) {
-                filePaths.add(FileUtils.getPcmFileAbsolutePath(fileName));
+                filePaths.add(FileUtils.getPcmFileAbsolutePath(fileName,context));
             }
 
             for (int i = 0; i < filePaths.size(); i++) {
@@ -242,7 +246,7 @@ public class AudioRecordFunc {
                 currentFileName += filesName.size();
             }
             filesName.add(currentFileName);
-            File file = new File(FileUtils.getPcmFileAbsolutePath(currentFileName));
+            File file = new File(FileUtils.getPcmFileAbsolutePath(currentFileName,context));
             if (file.exists()) {
                 file.delete();
             }
@@ -275,7 +279,7 @@ public class AudioRecordFunc {
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
-                if (PcmToWav.mergePCMFilesToWAVFile(filePaths, FileUtils.getWavFileAbsolutePath(AudioName))) {
+                if (PcmToWav.mergePCMFilesToWAVFile(filePaths, FileUtils.getWavFileAbsolutePath(AudioName,context))) {
                     //操作成功
                 } else {
                     //操作失败

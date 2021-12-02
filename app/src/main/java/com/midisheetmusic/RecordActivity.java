@@ -1,7 +1,9 @@
 package com.midisheetmusic;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
@@ -60,7 +62,7 @@ public class RecordActivity extends AppCompatActivity {
     long startRecorderTime = 0;
     long stopRecorderTime = 0;
     long pauseOffset = 0;
-    AudioRecordFunc mAudioRecordFunc = new AudioRecordFunc();
+    AudioRecordFunc mAudioRecordFunc;
 
     ProgressDialog mProgressDialog = null;
     String midiFilePath = "";
@@ -69,6 +71,7 @@ public class RecordActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAudioRecordFunc = new AudioRecordFunc(this.getBaseContext());
         setTitle("MidiSheetMusic: Record");
         // Load the list of songs
         setContentView(R.layout.record);
@@ -204,7 +207,7 @@ public class RecordActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             createloadDialog();
-            String fileBasePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            String fileBasePath = getBaseContext().getExternalFilesDir(Environment.DIRECTORY_MUSIC).getAbsolutePath();
             String wavFilePath = fileBasePath + "/Ezrecord/WavFile/" + fileName + ".wav";
             midiFilePath = fileBasePath + "/Ezrecord/MidFile/" + fileName + ".mid";
             File file = new File(wavFilePath);
@@ -249,7 +252,7 @@ public class RecordActivity extends AppCompatActivity {
 
     private boolean doPlay(){
         try {
-            mAudioRecordFunc.play(FileUtils.getWavFileAbsolutePath(fileName));
+            mAudioRecordFunc.play(FileUtils.getWavFileAbsolutePath(fileName,getBaseContext()));
         }catch (Exception e){
             Toast.makeText(RecordActivity.this, "播放失敗", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -425,4 +428,5 @@ public class RecordActivity extends AppCompatActivity {
         mProgressDialog.setMessage("轉檔中，請燒等...");
         mProgressDialog.show();
     }
+
 }
