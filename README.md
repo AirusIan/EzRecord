@@ -1,4 +1,4 @@
-#EzRecord
+# EzRecord
 編號：\
 專題名稱：EzRecord\
 校名與科系：中央大學資訊管理系\
